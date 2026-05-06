@@ -292,6 +292,34 @@ is still in the Node MCP server until ported in-process.
 - `scripts/vendor/autocad-lisp-toolkit/.git/` — keep clone out of git if desired
 - Python caches / `.venv/`
 
+### 9.11 If `git push` returns 403 (wrong GitHub account)
+
+This machine was using HTTPS credentials for a GitHub user without write
+access to `moisesbritez92/autocad-mcp`.
+
+**Option A — PAT push (no saved token in git config):**
+
+1. Create a PAT: https://github.com/settings/tokens (scope `repo`, or
+   fine-grained write on that repository).
+2. In PowerShell (same window only — avoids saving in profile):
+
+   ```powershell
+   $env:GITHUB_TOKEN = "ghp_xxxxxxxx"   # your PAT
+   cd C:\Users\PCZONE.GE\autocad-mcp
+   .\scripts\git-push-with-token.ps1
+   ```
+
+**Option B — Offline handoff:** a portable bundle is written to
+`outputs/feature-office-rules-mcp-headless-tooling.bundle` (~290 KiB).
+Someone with repo access can apply it:
+
+```powershell
+git fetch .\outputs\feature-office-rules-mcp-headless-tooling.bundle feature/office-rules-mcp-headless-tooling:refs/remotes/bundle/feature-office
+git merge FETCH_HEAD
+```
+
+(or `git pull` from that bundle ref after reading `git bundle --help`).
+
 ### 9.10 Known limitations / bugs fixed along the way
 
 - **`ezdxf_batch.py` `purge`:** updated for ezdxf 1.4 (`is_any_layout` vs
