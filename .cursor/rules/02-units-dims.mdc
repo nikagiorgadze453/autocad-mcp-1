@@ -1,0 +1,74 @@
+---
+description: Units, dimensions, and standard wall thicknesses
+alwaysApply: true
+---
+
+# Units & Dimensions
+
+## Units
+
+- **All numeric coordinates are millimeters (mm)**. Never use meters or cm.
+- Set on every new drawing:
+  ```
+  (setvar "INSUNITS" 4)   ; 4 = mm
+  (setvar "MEASUREMENT" 1) ; metric
+  (setvar "LUNITS" 2)
+  (setvar "AUNITS" 0)
+  ```
+
+## Default thicknesses (mm)
+
+| Element                       | Thickness |
+|-------------------------------|-----------|
+| Reinforced concrete outer wall | 250–300  |
+| Brick / block outer wall       | 200      |
+| Plastered inner partition      | 120      |
+| Light partition (drywall)      |  80–100  |
+| Reinforced concrete slab       | 200      |
+| Floor finish layer             |  20–50   |
+
+## Standard openings (mm)
+
+| Opening                | Width | Height |
+|------------------------|-------|--------|
+| Front entry door       | 900   | 2100   |
+| Interior door          | 800   | 2100   |
+| Bathroom door          | 700   | 2100   |
+| Window (bedroom)       | 1500  | 1400   |
+| Window (kitchen)       | 1200  | 1400   |
+| Balcony / sliding door | 1800  | 2100   |
+
+## Minimum room sizes (СНиП 2.07.01-89 / Neufert)
+
+| Room              | Min area (m²) | Min clear width (mm) |
+|-------------------|---------------|----------------------|
+| Master bedroom    | 12            | 2700                 |
+| Bedroom           |  9            | 2400                 |
+| Living room       | 16            | 3000                 |
+| Kitchen           |  6            | 1800                 |
+| Bathroom (full)   |  3.3          | 1500                 |
+| WC only           |  1.0          |  900                 |
+| Corridor          |  —            |  900 (1100 ADA)      |
+
+## Dimension lines
+
+- Two parallel dim chains on each axis: per-bay dims close to the plan,
+  total dim further out (about 1100 mm offset).
+- Tick mark length 100 mm.
+- Text height 280 mm, on layer `DIM`.
+
+## Standard layer set
+
+| Layer        | Color | Use                                       |
+|--------------|-------|-------------------------------------------|
+| `WALL`       | 7     | Filled (SOLID hatch) walls                |
+| `WALL-INNER` | 8     | Inner partitions                          |
+| `DOOR`       | 4     | Door swings + leaf line                   |
+| `WINDOW`     | 5     | Window frame + glass line                 |
+| `FURN`       | 3     | Furniture / fixed fittings                |
+| `FIX`        | 6     | Plumbing fixtures                         |
+| `GRID`       | 1     | Structural grid axes                      |
+| `AXIS-LABEL` | 1     | Grid bubbles A/B/C, 1/2/3                 |
+| `DIM`        | 2     | Dimensions                                |
+| `TEXT`       | 7     | All text and title block content          |
+| `TITLE`      | 7     | Sheet frame and title block lines         |

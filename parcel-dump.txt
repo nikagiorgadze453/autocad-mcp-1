@@ -1,0 +1,39 @@
+[parcel-dump]
+DWG=test.dwg
+EXTMIN=(-57083.3 -55000.0 0.0)
+EXTMAX=(477909.0 4.61171e+06 0.0)
+[layer=R02_Nakveti]
+  count=0
+[layer=reg_nak]
+  count=0
+[layer=\U+10D2\U+10D6\U+10D0_\U+10E1\U+10D0\U+10DE\U+10E0\U+10DD\U+10D4\U+10E5\U+10E2\U+10DD]
+  count=0
+[layer=A-Wall]
+  count=0
+[all-layers]
+  0
+  Defpoints
+  A-Wall
+  G-Anno-Nplt
+  A-Anno-Scrn
+  reg_nak
+  \U+10D2\U+10D6\U+10D0_\U+10E1\U+10D0\U+10DE\U+10E0\U+10DD\U+10D4\U+10E5\U+10E2\U+10DD
+  R02_Nakveti
+  S-PROBE
+  S-PROBE2
+  S-SITE-BOUND
+  S-SETBACK
+  S-WALL
+  S-BLDG
+  S-ROAD
+  S-ROAD-LINE
+  S-PARKING
+  S-PARK-NUM
+  S-SIDEWALK
+  S-GREEN
+  S-TREE
+  S-DIM
+  S-TEXT
+  S-TITLE
+  S-TABLE
+  S-PROBE3

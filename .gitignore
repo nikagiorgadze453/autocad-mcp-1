@@ -11,3 +11,29 @@ outputs/
 # Auto-generated temp scripts (keep directory, ignore generated files)
 temp/*.lsp
 temp/*.scr
+temp/*.dxf
+temp/gis_out/
+
+# Vendored Lee Mac LISP — author asks users to download from his site,
+# not redistribute. See scripts/vendor/README.md.
+scripts/vendor/lee-mac/
+
+# Vendored MIT donor repo — clone locally; do not commit (embedded .git
+# breaks outer clones). See scripts/vendor/README.md.
+scripts/vendor/autocad-lisp-toolkit/
+
+# Python build / cache
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.pytest_cache/
+
+# .NET build output (do not commit binaries / MSBuild intermediates)
+autocad-plugin/bin/
+autocad-plugin/obj/
+
+# Large regenerable raw dumps (re-run dump-stage-deep.lsp to recreate)
+stage-dump.txt
+stage-dump-deep.txt
+all-dump.txt

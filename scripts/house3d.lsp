@@ -1,0 +1,30 @@
+(setvar "CMDECHO" 0)
+(setvar "OSMODE" 0)
+(command "_.ERASE" "_ALL" "")
+(command "_.UCS" "_W")
+
+(setq h 2700.0)
+
+(defun box3 (x1 y1 x2 y2 height)
+  (command "_.BOX" (list x1 y1 0.0) (list x2 y2 0.0) height)
+)
+
+(box3 0     0     13000 200    h)
+(box3 0     9800  13000 10000  h)
+(box3 0     0     200   10000  h)
+(box3 12800 0     13000 10000  h)
+(box3 200   5000  12800 5120   h)
+(box3 7800  200   7920  5000   h)
+(box3 200   6520  12800 6640   h)
+(box3 3800  6640  3920  9800   h)
+(box3 8200  6640  8320  9800   h)
+(box3 11000 6640  11120 9800   h)
+
+(command "_.BOX" (list 0.0 0.0 0.0) (list 13000.0 10000.0 0.0) -150.0)
+(command "_.BOX" (list 0.0 0.0 2700.0) (list 13000.0 10000.0 2700.0) 200.0)
+
+(command "_.-VIEW" "_SWISO")
+(command "_.VSCURRENT" "_C")
+(command "_.ZOOM" "_E")
+(princ "\n[HOUSE3D] done.")
+(princ)

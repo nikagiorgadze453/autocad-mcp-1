@@ -13,3 +13,12 @@ C:\Users\moise\Documents\010_MCP\autocad-plugin\obj\Release\net8.0-windows\AutoC
 C:\Users\moise\Documents\010_MCP\autocad-plugin\obj\Release\net8.0-windows\refint\AutoCAD.MCP.Plugin.dll
 C:\Users\moise\Documents\010_MCP\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.pdb
 C:\Users\moise\Documents\010_MCP\autocad-plugin\obj\Release\net8.0-windows\ref\AutoCAD.MCP.Plugin.dll
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.csproj.AssemblyReference.cache
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.AssemblyInfoInputs.cache
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.AssemblyInfo.cs
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.csproj.CoreCompileInputs.cache
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.sourcelink.json
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.dll
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\refint\AutoCAD.MCP.Plugin.dll
+C:\Users\PCZONE.GE\autocad-mcp\autocad-plugin\obj\Release\net8.0-windows\AutoCAD.MCP.Plugin.pdb

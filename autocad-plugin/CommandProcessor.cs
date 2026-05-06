@@ -90,6 +90,15 @@ namespace AutoCAD.MCP.Plugin
                 case "create_block_definition":   return CreateBlockDefinition(request.Args);
                 case "purge_drawing":             return PurgeDrawing();
 
+                // ── Office-specific (rule-aware) high-level handlers ──
+                // These are stubs — the Node MCP wrappers in src/index.ts
+                // currently orchestrate via run_lsp_script + run_command,
+                // but having dedicated plugin entry points here lets us
+                // shortcut once the in-process logic is ported to C#.
+                case "analyze_stage_plan":          return AnalyzeStagePlan(request.Args);
+                case "compute_grg_metrics":         return ComputeGrgMetrics(request.Args);
+                case "migrate_layers_to_standard":  return MigrateLayersToStandard(request.Args);
+
                 default:
                     throw new ArgumentException($"Unknown command: {request.Command}");
             }
@@ -1962,6 +1971,78 @@ namespace AutoCAD.MCP.Plugin
             }
 
             return new { status = "success", purgedItems = totalPurged };
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  Office-specific (rule-aware) high-level handlers — STUBS
+        // ════════════════════════════════════════════════════════════════════
+        //
+        // These three commands wrap the Cursor "skills" defined in
+        // .cursor/skills/* and the LSP scripts under scripts/. The Node-side
+        // MCP server (src/index.ts) currently does the orchestration by
+        // calling run_lsp_script + run_command, which is enough for v1.
+        //
+        // Once the in-process logic is ported to C# (faster, no HTTP round
+        // trips, can return structured Newtonsoft objects directly), each
+        // stub below should:
+        //   1. Inspect the active drawing via Database / Editor APIs
+        //   2. Compute the result deterministically (no LSP loadback)
+        //   3. Return a JObject the MCP server can pass to the LLM as-is
+        //
+        // For now they simply forward to RunLspScript / RunCommand so the
+        // command name is reachable from the plugin too.
+
+        private object AnalyzeStagePlan(Dictionary<string, object>? args)
+        {
+            // TODO: port analyze_v3.cjs into managed code so the plugin can
+            // do the dump + parse + Georgian DOCX in a single in-proc call.
+            // For now, the Node MCP wrapper is the source of truth.
+            return new
+            {
+                status = "stub",
+                message = "analyze_stage_plan is currently orchestrated by the Node MCP wrapper. " +
+                          "Plugin-side implementation pending.",
+                next_step = "Run run_lsp_script with scripts/dump-stage-deep.lsp"
+            };
+        }
+
+        private object ComputeGrgMetrics(Dictionary<string, object>? args)
+        {
+            // TODO: port compute-grg-k.lsp into managed code, walking
+            // ModelSpace via Database API to find PARCEL polylines, building
+            // footprints and green areas. Return K1, K2-1 (FAR), K3 directly.
+            int floors = args != null && args.TryGetValue("floors", out var f) && f != null
+                ? Convert.ToInt32(f) : 1;
+            string? fz = args != null && args.TryGetValue("functionalZone", out var z) && z != null
+                ? z.ToString() : null;
+            return new
+            {
+                status = "stub",
+                message = "compute_grg_metrics is currently orchestrated by the Node MCP wrapper. " +
+                          "Plugin-side implementation pending.",
+                received_floors = floors,
+                received_zone = fz,
+                next_step = "Run run_lsp_script with scripts/utilities/compute-grg-k.lsp then (c:GrgK <floors>)"
+            };
+        }
+
+        private object MigrateLayersToStandard(Dictionary<string, object>? args)
+        {
+            // TODO: port layer-remap-to-standard.lsp into managed code so we
+            // can iterate the LayerTable in a single transaction, rename
+            // entries, and re-assign every entity's Layer property in one
+            // pass without any LSP roundtrip.
+            bool backup     = args == null || !args.TryGetValue("backup", out var b)     || b == null ? true  : Convert.ToBoolean(b);
+            bool forceFont  = args != null  &&  args.TryGetValue("forceFontMigration", out var ff) && ff != null && Convert.ToBoolean(ff);
+            bool purge      = args == null || !args.TryGetValue("purgeAfter", out var p) || p == null ? true  : Convert.ToBoolean(p);
+            return new
+            {
+                status = "stub",
+                message = "migrate_layers_to_standard is currently orchestrated by the Node MCP wrapper. " +
+                          "Plugin-side implementation pending.",
+                received_options = new { backup, forceFont, purge },
+                next_step = "Run run_lsp_script with scripts/utilities/layer-remap-to-standard.lsp then (c:LayerRemap)"
+            };
         }
     }
 }

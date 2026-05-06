@@ -1,0 +1,329 @@
+{
+  "per_bina": [
+    {
+      "bina": 8,
+      "pos": {
+        "x": 475292171.47,
+        "y": 4621104228.236
+      },
+      "d_target_m": 19.03,
+      "flat_m2": 85.6,
+      "rooms": [
+        3.6
+      ],
+      "dim_count": 5,
+      "windows_logical": 8,
+      "doors_logical": 15,
+      "wall_lines_count": 20,
+      "wall_lines_len_m": 11.37,
+      "closed_wall_polys": 0,
+      "closed_wall_perim_m": 0,
+      "columns": 0,
+      "inserts": 13,
+      "room_total_m2": 3.6,
+      "dim_min_m": 0,
+      "dim_max_m": 1.8
+    },
+    {
+      "bina": 9,
+      "pos": {
+        "x": 475285194.19,
+        "y": 4621101732.503
+      },
+      "d_target_m": 11.8,
+      "flat_m2": 65.6,
+      "rooms": [
+        11
+      ],
+      "dim_count": 4,
+      "windows_logical": 6,
+      "doors_logical": 14,
+      "wall_lines_count": 0,
+      "wall_lines_len_m": 0,
+      "closed_wall_polys": 1,
+      "closed_wall_perim_m": 8.2,
+      "columns": 0,
+      "inserts": 17,
+      "room_total_m2": 11,
+      "dim_min_m": 1.5,
+      "dim_max_m": 2.2
+    },
+    {
+      "bina": 10,
+      "pos": {
+        "x": 475278025.787,
+        "y": 4621100575.326
+      },
+      "d_target_m": 6.2,
+      "flat_m2": 63.7,
+      "rooms": [
+        7.9
+      ],
+      "dim_count": 1,
+      "windows_logical": 5,
+      "doors_logical": 4,
+      "wall_lines_count": 2,
+      "wall_lines_len_m": 1.4,
+      "closed_wall_polys": 0,
+      "closed_wall_perim_m": 0,
+      "columns": 1,
+      "inserts": 9,
+      "room_total_m2": 7.9,
+      "dim_min_m": 0.6,
+      "dim_max_m": 0.6
+    },
+    {
+      "bina": 22,
+      "pos": {
+        "x": 475273422.38,
+        "y": 4621106442.351
+      },
+      "d_target_m": 11.77,
+      "flat_m2": 46,
+      "rooms": [
+        8,
+        3.6
+      ],
+      "dim_count": 8,
+      "windows_logical": 6,
+      "doors_logical": 9,
+      "wall_lines_count": 14,
+      "wall_lines_len_m": 6.45,
+      "closed_wall_polys": 1,
+      "closed_wall_perim_m": 0.76,
+      "columns": 1,
+      "inserts": 11,
+      "room_total_m2": 11.6,
+      "dim_min_m": 0.3,
+      "dim_max_m": 6.9
+    },
+    {
+      "bina": 23,
+      "pos": {
+        "x": 475272715.617,
+        "y": 4621100000.343
+      },
+      "d_target_m": 5.88,
+      "flat_m2": 68.5,
+      "rooms": [
+        12.1
+      ],
+      "dim_count": 1,
+      "windows_logical": 6,
+      "doors_logical": 11,
+      "wall_lines_count": 1,
+      "wall_lines_len_m": 0.9,
+      "closed_wall_polys": 3,
+      "closed_wall_perim_m": 1.58,
+      "columns": 1,
+      "inserts": 15,
+      "room_total_m2": 12.1,
+      "dim_min_m": 0.6,
+      "dim_max_m": 0.6
+    },
+    {
+      "bina": 24,
+      "pos": {
+        "x": 475257196.653,
+        "y": 4621099327.361
+      },
+      "d_target_m": 18.93,
+      "flat_m2": 68.3,
+      "rooms": [
+        12.1
+      ],
+      "dim_count": 0,
+      "windows_logical": 6,
+      "doors_logical": 6,
+      "wall_lines_count": 1,
+      "wall_lines_len_m": 0.9,
+      "closed_wall_polys": 0,
+      "closed_wall_perim_m": 0,
+      "columns": 0,
+      "inserts": 10,
+      "room_total_m2": 12.1,
+      "dim_min_m": null,
+      "dim_max_m": null
+    },
+    {
+      "bina": 25,
+      "pos": {
+        "x": 475257971.207,
+        "y": 4621105227.906
+      },
+      "d_target_m": 20.45,
+      "flat_m2": 45.8,
+      "rooms": [
+        8,
+        3.6
+      ],
+      "dim_count": 3,
+      "windows_logical": 6,
+      "doors_logical": 13,
+      "wall_lines_count": 15,
+      "wall_lines_len_m": 7.95,
+      "closed_wall_polys": 1,
+      "closed_wall_perim_m": 0.76,
+      "columns": 1,
+      "inserts": 17,
+      "room_total_m2": 11.6,
+      "dim_min_m": 0.59,
+      "dim_max_m": 1.4
+    },
+    {
+      "bina": 37,
+      "pos": {
+        "x": 475252152.542,
+        "y": 4621096552.884
+      },
+      "d_target_m": 23.51,
+      "flat_m2": 63.7,
+      "rooms": [
+        7.9
+      ],
+      "dim_count": 2,
+      "windows_logical": 5,
+      "doors_logical": 4,
+      "wall_lines_count": 2,
+      "wall_lines_len_m": 1.4,
+      "closed_wall_polys": 3,
+      "closed_wall_perim_m": 1.3,
+      "columns": 2,
+      "inserts": 11,
+      "room_total_m2": 7.9,
+      "dim_min_m": 0.59,
+      "dim_max_m": 0.61
+    },
+    {
+      "bina": 38,
+      "pos": {
+        "x": 475245084.625,
+        "y": 4621097712.006
+      },
+      "d_target_m": 30.65,
+      "flat_m2": 65.6,
+      "rooms": [
+        11
+      ],
+      "dim_count": 4,
+      "windows_logical": 6,
+      "doors_logical": 14,
+      "wall_lines_count": 0,
+      "wall_lines_len_m": 0,
+      "closed_wall_polys": 1,
+      "closed_wall_perim_m": 8.2,
+      "columns": 0,
+      "inserts": 18,
+      "room_total_m2": 11,
+      "dim_min_m": 1.5,
+      "dim_max_m": 2.2
+    },
+    {
+      "bina": 39,
+      "pos": {
+        "x": 475238110.017,
+        "y": 4621099943.68
+      },
+      "d_target_m": 37.83,
+      "flat_m2": 85.6,
+      "rooms": [
+        3.6
+      ],
+      "dim_count": 2,
+      "windows_logical": 9,
+      "doors_logical": 16,
+      "wall_lines_count": 20,
+      "wall_lines_len_m": 11.37,
+      "closed_wall_polys": 0,
+      "closed_wall_perim_m": 0,
+      "columns": 1,
+      "inserts": 15,
+      "room_total_m2": 3.6,
+      "dim_min_m": 1.4,
+      "dim_max_m": 1.4
+    }
+  ],
+  "totals": {
+    "flat_total_m2": 658.4,
+    "windows_total": 63,
+    "doors_total": 106,
+    "columns_total": 7,
+    "wall_lines_total_m": 41.74,
+    "closed_wall_perim_total_m": 20.8,
+    "inserts_in_clusters": 136
+  },
+  "dimensions_global": {
+    "total": 248,
+    "georef_valid": 118,
+    "min_m": 0.2,
+    "max_m": 63.9,
+    "median_m": 1.5,
+    "top_value_50mm_buckets": {
+      "0.4": 32,
+      "6.5": 18,
+      "6.9": 9,
+      "0.6": 6,
+      "1.4": 6,
+      "1.5": 6,
+      "2.2": 5,
+      "0.3": 4,
+      "1.9": 4,
+      "7.4": 4,
+      "0.9": 3,
+      "0.7": 2,
+      "3.8": 2,
+      "7.9": 2,
+      "8.1": 2,
+      "19.4": 2,
+      "0.2": 1,
+      "1.8": 1,
+      "2.0": 1,
+      "3.9": 1,
+      "4.0": 1,
+      "5.2": 1,
+      "5.9": 1,
+      "6.2": 1,
+      "8.2": 1,
+      "11.5": 1,
+      "63.9": 1
+    },
+    "classification": {
+      "<300mm wall thickness or callout": 1,
+      "300–550mm structural element": 36,
+      "550–950mm door / passage": 11,
+      "1.2–1.6m kitchen window": 12,
+      "1.6–2.0m bedroom window": 5,
+      "2.0–2.5m balcony door": 6,
+      "2.5–4.0m room bay": 3,
+      "4–6m room bay": 3,
+      "6–10m building module": 37,
+      ">10m total dimension": 4
+    }
+  },
+  "windows": {
+    "total_polys_georef": 308,
+    "cluster_count_total": 90,
+    "width_histogram_100mm": {
+      "700": 32,
+      "800": 2,
+      "900": 4,
+      "1000": 6,
+      "1600": 6
+    }
+  },
+  "doors": {
+    "total_polys_georef": 277,
+    "cluster_count_total": 113,
+    "width_histogram_100mm": {
+      "800": 58,
+      "900": 13
+    }
+  },
+  "walls_global": {
+    "line_count_in_bldgs": 175,
+    "line_total_len_m": 181.81,
+    "closed_poly_count": 11,
+    "closed_poly_total_perim_m": 29,
+    "closed_poly_total_area_m2": 12.62
+  }
+}

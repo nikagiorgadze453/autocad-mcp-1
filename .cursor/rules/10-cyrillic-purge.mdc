@@ -1,0 +1,110 @@
+---
+description: Layer-rename + MText-override migration from Cyrillic legacy to project standard
+alwaysApply: true
+---
+
+# Cyrillic / `_Pen_No__N` purge procedure
+
+Every Tbilisi DWG that came through Russian / Soviet-era offices carries
+layer names like
+`New_2D Drafting - General_Pen_No__30_Pen_No__9_Pen_No__9_Pen_No__7`
+and MText with `\fArial|c204` overrides (CP-1251 codepage). This rule
+defines how to migrate them to the project standard from
+`02-units-dims.mdc` and `00-georgian-text.mdc`.
+
+## Step 0 — Triage
+
+```
+(setq old-count (length (vla-get-layers (vla-get-activedocument (vlax-get-acad-object)))))
+```
+
+If `old-count > 60` the file is almost certainly a legacy import.
+
+## Step 1 — Layer-name → standard mapping
+
+| Old layer pattern | New standard layer |
+|---|---|
+| `*Wall*`, `*Bearing*`, `*shenobeb*` | `WALL` |
+| `*partition*`, `*tixar*` | `WALL-INNER` |
+| `*Door*`, `*kar-*`, but **only door geometry** | `DOOR` |
+| `*panjar*`, `*window*`, `*kar-panjara*` | `WINDOW` |
+| `*Furniture*`, `*Interior*`, `*aveji*` | `FURN` |
+| `*WC*`, `*lavabo*`, `*shower*`, `*bidet*`, `*plumbing*` | `FIX` |
+| `*grid*`, `*axis*`, `*Reg_Nak*` | `GRID` |
+| `*axis-label*`, `*bubble*` | `AXIS-LABEL` |
+| `*zoma*`, `*dim*`, `*cota*` | `DIM` |
+| `*text*`, `*anno*`, `*annotation*` | `TEXT` |
+| `*title*`, `*werwera*`, `*frame*` | `TITLE` |
+| `*topo*`, `*GAZI*`, `*sxivebi*`, `*momijnave*` | leave on the topo layer (xref residue) |
+| `*ნაკვეთ*`, `*sakutreb*` | `PARCEL` (extra) |
+
+> When in doubt, keep the entity on its current layer and inspect by hand.
+
+## Step 2 — Run the remap
+
+`scripts/utilities/layer-remap-to-standard.lsp` does this:
+
+1. Builds the mapping table.
+2. For each entity in modelspace it inspects the current layer name,
+   matches against the rules above and re-assigns layer.
+3. Writes a per-rule counter to `layer-remap-report.txt`.
+
+## Step 3 — Purge unused layers
+
+```
+(command "_.PURGE" "_LA" "*" "_N")
+(command "_.PURGE" "_BL" "*" "_N")
+(command "_.PURGE" "_R" "_BL" "*" "_N")
+```
+
+## Step 4 — Migrate MText fonts
+
+Search every `MText` for `\fArial|c204` and replace with `\fSylfaen|b0|i0;`.
+
+Pseudocode:
+
+```
+(setq ss (ssget "_X" '((0 . "MTEXT"))))
+(repeat (sslength ss)
+  (setq e (ssname ss 0))
+  (setq ed (entget e))
+  (setq new (vl-string-subst "\\fSylfaen|b0|i0;"
+                             "\\fArial|b0|i0|c204|p0;"
+                             (cdr (assoc 1 ed))))
+  (entmod (subst (cons 1 new) (assoc 1 ed) ed))
+  (setq ss (ssdel e ss)))
+```
+
+## Step 5 — Recreate the standard text style
+
+```
+(command "_.-STYLE" "GEO" "Sylfaen.ttf" "0" "1" "0" "N" "N" "N")
+(command "_.STYLE" "Standard" "" "" "" "" "" "")  ; reset Standard
+```
+
+## Step 6 — Validate
+
+After remap run:
+
+```
+(load "C:/Users/PCZONE.GE/autocad-mcp/scripts/validators/check-title-block.lsp")
+(load "C:/Users/PCZONE.GE/autocad-mcp/scripts/validators/check-min-rooms.lsp")
+```
+
+and also the MCP `validate_drawing` + `compute_metrics`.
+
+## Common pitfalls
+
+- **Don't lose the `New_ნაკვეთების კონტურები გრგ2_*` layer** — it's the
+  parcel boundary from GRG-2 and you'll need it for K-coefficient
+  calculation. Keep it on its own layer or remap to `PARCEL`.
+- **Don't merge `kar-panjara` doors and windows blindly.** That layer
+  often holds **both**. Use entity bounding-box analysis to split:
+  short ones (< 1 200 mm) → `DOOR`, longer ones → `WINDOW`.
+- **HATCH on the `G-Anno-Nplt_Pen_No__151` layer is the cyan label
+  highlight under area numbers** — keep on a separate `TEXT-HILITE` if
+  the office uses it.
+- **MTEXT with no Georgian content** (just numbers like `8.0 m²`) —
+  leave the font alone; only force Sylfaen on actual Georgian text.
+- **Annotative scale entities** can break after layer rename. Run
+  `_REGENALL` to re-cache.

@@ -1,0 +1,57 @@
+---
+description: Standard title block format for every drawing
+alwaysApply: true
+---
+
+# Title Block — საწარმოო ფურცლის წარწერა
+
+Every architectural / structural sheet must include a title block on the
+**right edge** of the sheet, framed with a thin rectangle and divided into
+6 horizontal rows. Use Sylfaen Georgian font.
+
+## Required fields (in order, top to bottom)
+
+| Row | Field        | Georgian label   | Notes                     |
+|-----|--------------|------------------|---------------------------|
+| 1   | Project      | პროექტი:         | Full project name         |
+| 2   | Drawing      | ნახაზი:          | Sheet content (e.g. ფუნდამენტის გეგმა) |
+| 3   | Sheet code   | ფურცელი:         | e.g. კ-44, A-01, FZ-3     |
+| 4   | Scale        | მასშტაბი:        | e.g. 1:50, 1:100          |
+| 5   | Date         | თარიღი:          | YYYY-MM                   |
+| 6   | Drawn by     | შემსრულებელი:    | Author / firm             |
+
+## Sheet codes by drawing type
+
+Keep the same codes used in the reference projects so files match the
+existing set:
+
+- `კ-…` reinforced concrete construction (კონსტრუქცია)
+- `ა-…` / `A-…` architectural (არქიტექტურა)
+- `FZ-…` ფუნქციური ზონა (functional zone, GRG)
+- `MZL…`, `CZ…`, `CI…`, `CTS…`, `CVC…`, `CIR…` zoning regulation codes
+  used in `19_xref_grg`
+- `xref_…` external-reference base files (topo, shenobebi, gzebi,
+  zonireba, gengegma, sakutreba, gantavseba, etc.)
+
+## Standard sheet sizes (mm)
+
+| Format | Width × Height | Use                      |
+|--------|----------------|--------------------------|
+| A4     |  297 ×  210    | small details            |
+| A3     |  420 ×  297    | small details            |
+| A2     |  594 ×  420    | apartment / small house  |
+| A1     |  841 ×  594    | full floor plan          |
+| A0     | 1189 ×  841    | site / GRG plans         |
+
+When drawing in metric (mm), multiply these by 1 (everything is in mm).
+
+## Outside-margin frame
+
+Every sheet has 3 nested rectangles: outer trim, inner frame
+(margin 600 mm), and inner content area (margin 800 mm), drawn on layer
+`TITLE`.
+
+## Title above the plan content
+
+Above the drawing area, set a centered title in 600 mm Sylfaen, plus
+a 280 mm subtitle line beneath it, both on layer `TEXT`.

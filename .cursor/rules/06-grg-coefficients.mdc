@@ -1,0 +1,98 @@
+---
+description: GRG K-coefficients, FAR and Tbilisi 14-39 ordinance numerics
+alwaysApply: true
+---
+
+# GRG K-coefficients & Tbilisi 14-39
+
+When a project sits inside the Tbilisi land-use plan it must satisfy the
+K1 / K2 / K3 / FAR coefficients defined in the Sakrebulo ordinance
+**14-39** (with consolidations + amendments **41**, **57**, **59**, **4-13**)
+that live under
+`C:\Users\PCZONE.GE\Downloads\wetransfer_03_xref_saproeqto_2026-04-29_1038\kanonmdebloba\`.
+
+## Definitions
+
+| Symbol | Meaning | Formula |
+|---|---|---|
+| **K1** | building-footprint coefficient (`განაშენების კოეფიციენტი`) | Σ ground-floor building footprint / parcel area |
+| **K2** | total built-up coefficient | Σ all building footprints (incl. canopies, balconies > 1.5 m) / parcel area |
+| **K2-1** | gross floor-area coefficient (= FAR) | Σ above-ground gross floor area / parcel area |
+| **K3** | landscape / green coefficient (`გამწვანების კოეფიციენტი`) | green-cover area / parcel area |
+| **K3-1** | natural-soil green coefficient | natural-ground green / parcel area |
+| **FAR** | floor-area ratio | usually equals K2-1 |
+
+`Parcel area` = polygon on layer
+`New_ნაკვეთების კონტურები გრგ2_*` (or `xref_sakutreba`).
+
+## Typical Tbilisi residential thresholds
+
+> Always read the actual ordinance for the parcel’s **functional zone**
+> (FZ-…). The numbers below are typical defaults — re-check against
+> `14-39.pdf`, `41.pdf`, `57.pdf`, `59.pdf` for the specific FZ.
+
+| Functional zone | K1 max | K2-1 max (FAR) | K3 min | Storey limit |
+|---|---|---|---|---|
+| LR-1 (low-rise residential) | 0.30 | 0.6 – 0.9 | 0.50 | 3 |
+| LR-2 | 0.40 | 1.2 | 0.40 | 4 |
+| MR (mid-rise residential) | 0.50 | 2.0 – 2.5 | 0.30 | 6 – 9 |
+| HR (high-rise residential) | 0.50 | 3.5 – 5.5 | 0.25 | 12 – 24 |
+| MX (mixed) | 0.55 | varies | 0.20 | varies |
+| RC (recreation) | 0.10 | 0.10 | 0.85 | 1 |
+
+## Setbacks (`უკუ-დახრები`)
+
+| Direction | Default minimum |
+|---|---|
+| Front (street) | 5 m or matches red line |
+| Side | h / 2 (where *h* = building height) |
+| Rear | h / 2 |
+| Building-to-building (same parcel) | h (the taller of the two) |
+
+## Computing K coefficients in LISP
+
+Pseudocode for `compute-grg-k.lsp`:
+
+```
+(setq parcel  (vlax-curve-getarea (entget (car (entsel "\nparcel:")))))
+(setq footprint 0.0)
+(foreach b (ssget-list-on-layer "WALL")
+   (setq footprint (+ footprint (vlax-curve-getarea b))))
+(setq K1 (/ footprint parcel))
+(setq FAR (* K1 floors))   ; floors = number of stories
+```
+
+## Reporting block (Georgian, for FZ sheet title block)
+
+| რიგი | ველი |
+|---|---|
+| 1 | ნაკვეთის ფართი (S) |
+| 2 | განაშენების კოეფიციენტი K-1 |
+| 3 | სრული აშენების კოეფიციენტი K-2 |
+| 4 | სართულების ფართი K-2-1 (FAR) |
+| 5 | გამწვანების კოეფიციენტი K-3 |
+| 6 | სართულების რაოდენობა |
+| 7 | მაქსიმალური სიმაღლე |
+
+## Reference cluster (from `STAGE_PLAN_REPORT.md`)
+
+The 10-bina B-type cluster has:
+
+- envelope ≈ 535 m²
+- 1 floor ≈ 658.4 m² gross above-ground (ground-floor only)
+- if N floors: gross = 658.4 × N
+
+To pass MR zoning the parcel needs to be **≥ 1 070 m²** (gives K1 ≈ 0.50).
+For 4-storey use the parcel must be **≥ 1 050 m²** (gives FAR ≈ 2.5).
+
+## Accessibility cross-checks
+
+Per `N41 dadgenileba shezguduli...pdf`:
+
+- ramp slope ≤ 1 : 12 (8.3 %)
+- accessible door clear opening ≥ 900 mm
+- accessible WC ≥ 1.65 × 1.80 m
+- pavement / threshold step ≤ 14 mm
+
+Our default 800 mm interior door fails the accessibility threshold; flag
+it on every report.

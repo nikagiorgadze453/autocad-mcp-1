@@ -1,0 +1,82 @@
+---
+description: Index of legislation, standards and reference DWGs to consult
+alwaysApply: true
+---
+
+# Reference Library
+
+When the user asks for an architectural / urban-planning drawing, consult
+the following sources **before** drawing. They are the authoritative
+documents for projects on this machine.
+
+## Legislation & standards (PDF / DOCX)
+
+Folder: `C:\Users\PCZONE.GE\Downloads\wetransfer_03_xref_saproeqto_2026-04-29_1038\kanonmdebloba\`
+
+| File                                        | What it covers |
+|---------------------------------------------|----------------|
+| `14-39.pdf` + `_konsolodirebuli*.pdf`       | Tbilisi land-use main ordinance #14-39 |
+| `41.pdf`                                    | Tbilisi ordinance #41 |
+| `57.pdf`                                    | Tbilisi ordinance #57 |
+| `59.pdf`                                    | Tbilisi ordinance #59 |
+| `4-13_*.pdf`                                | Document #4-13 + amendments |
+| `N41 dadgenileba shezguduli...pdf`          | Accessibility requirements (disabled persons) |
+| `grg ...pdf`                                | GRG (general plan) procedural rules |
+| `СНиП 2.07.01-89.pdf`                       | Soviet/Russian urban-planning code (rooms, distances, parking) |
+| `National CAD Standard ver 3.1.pdf`         | NCS 3.1 — layer naming, sheet codes, line weights |
+| `Neufert.Architects.Data.3rd.ed.2000.pdf`   | THE architectural data reference (room sizes, ergonomics) |
+| `Raumpilot-Grundlagen / -Wohnen / -Arbeiten / -Lernen.pdf` | German residential / work / learning typologies |
+
+When a request is ambiguous (e.g. "draw a school plan"), pull dimensions
+from Neufert + Raumpilot, and zoning constraints from the Tbilisi
+ordinances.
+
+## Reference project — multi-building site (xref set)
+
+Folder: `C:\Users\PCZONE.GE\Downloads\wetransfer_03_xref_saproeqto_2026-04-29_1038\03_xref_saproeqto\`
+
+Open these as base xrefs when the user asks for a similar site plan:
+
+| File                                | Layer / role |
+|-------------------------------------|--------------|
+| `xref_topo.dwg`                     | Topography base |
+| `xref_sakutreba.dwg`                | Cadastral / ownership boundaries |
+| `xref_shenobebi.dwg`                | Existing buildings |
+| `xref_gzebi.dwg` / `_gzebi da trotuarebi.dwg` | Roads + sidewalks |
+| `xref_gantavseba.dwg`               | Site placement plan |
+| `xref_gamijvna.dwg`                 | Plot subdivision |
+| `xref_zonireba.dwg`                 | Zoning |
+| `xref_saproeqto_*.dwg`              | Designed (proposed) overlays |
+| `xref_k3 da xelishemshleli.dwg`     | K3 zone + obstructions |
+| `xref_momijnave.dwg`                | Adjacent plots |
+
+The folder `04_Xref_saproeqto/` is a richer copy with `xref_arsebuli_shenobebi`,
+`xref_inventarizacia`, `xref_miwisqvesha_parkingi` (underground parking),
+`xref_sxivebi` (sun rays / shadows), `xref_sqematuri chrili` (schematic section),
+`xref_gamwvaneba` (greenery), and a `xref_gengegma.dwg` master general plan.
+
+## Reference project — GRG (general plan) sheet set
+
+Folder: `C:\Users\PCZONE.GE\Downloads\wetransfer_19_xref_grg_2026-04-29_1051\`
+
+- Master file: `GRG to PDF.dwg`
+- Xrefs in `19_xref_grg\`: `xref_cig`, `xref_cip`, `xref_cis`, `xref_ciw`,
+  `xref_etapebi da rigitoba`, `xref_gwp`, `xref_gzasapr`, `xref_mili`,
+  `xref_rekr`, `xref_samsh_arasamsh`, `xref_servituti`, `xref_shenoba`,
+  `xref_sxivebi`, `xref_topo`, `xref_zonreba`, `xref_miwisqvesha_avtosadgomebi`.
+- Output PDFs follow the **GRG to PDF-XX.pdf** naming where XX is the
+  sheet code (A1–A8, CIG, CIP, CIS, CIW, CIR1, CIR2, CTS12, CVC4,
+  CZLSZ, CZVCNZ, FZ1–FZ8, MZLFZ, MZLSZ, MZLTSZ).
+
+When the user says "make a GRG sheet for FZ3", use the same filename
+pattern, the same xref structure, and the title block `01-title-block.mdc`
+specifies.
+
+## How to use this index
+
+1. Identify the **drawing type** the user wants (zoning, GRG, building plan, section).
+2. Match to the closest reference DWG above and reuse its layer/xref structure.
+3. If no DWG matches, fall back to Neufert / Raumpilot / СНиП for sizing,
+   then the Tbilisi ordinances for setbacks, heights, FAR, K-coefficients.
+4. Sheet labels and codes always follow the existing project codes
+   (`კ-…`, `A-…`, `FZ-…`, `CZ…`, `MZL…`).

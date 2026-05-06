@@ -1118,6 +1118,86 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["contextJsonPath"]
         }
+      },
+
+      // ── Office-specific high-level wrappers ─────────────────────
+      {
+        name: "analyze_stage_plan",
+        description: "Performs a deep analysis of the active AutoCAD stage / site plan: dumps every entity, classifies them per bina (A/B/C apartment type from rule 05-typology-bina.mdc), counts total m², and writes a Georgian Word report. Wraps the analyze-stage-plan skill.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            outputDir: { type: "string", description: "Where to write the dump + reports (default: project root)" },
+            generateDocx: { type: "boolean", description: "Whether to also emit STAGE_PLAN_REPORT_GE.docx (default true)" },
+            targetCoord: {
+              type: "object",
+              description: "Optional UTM target to label in the report",
+              properties: {
+                x: { type: "number" },
+                y: { type: "number" }
+              }
+            }
+          }
+        }
+      },
+      {
+        name: "compute_grg_metrics",
+        description: "Computes the Tbilisi GRG K-coefficients (K-1 footprint, K-2-1 / FAR, K-3 green) of the active drawing and validates them against the functional-zone limits in rule 06-grg-coefficients.mdc. Wraps scripts/utilities/compute-grg-k.lsp.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            floors: { type: "number", description: "Number of above-ground floors", default: 1 },
+            functionalZone: {
+              type: "string",
+              enum: ["LR-1", "LR-2", "MR", "HR", "MX", "RC"],
+              description: "FZ code (LR-1, LR-2, MR, HR, MX, RC) to validate K-values against. If omitted, only computed values are returned."
+            }
+          },
+          required: ["floors"]
+        }
+      },
+      {
+        name: "migrate_layers_to_standard",
+        description: "Migrates legacy Cyrillic / Soviet-era AutoCAD layer names (e.g. New_*_Pen_No__N) to the project's 11-layer standard from rule 02-units-dims.mdc. Also fixes Arial-codepage-204 MText overrides to Sylfaen and purges unused layers. Wraps scripts/utilities/layer-remap-to-standard.lsp.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            backup: { type: "boolean", description: "If true (default), saves a *-PRE-REMAP.dwg copy before remapping" },
+            forceFontMigration: { type: "boolean", description: "If true, replaces \\fArial|c204 with \\fSylfaen on every MText (default false)" },
+            purgeAfter: { type: "boolean", description: "If true (default), runs PURGE for layers / blocks / styles after remap" }
+          }
+        }
+      },
+
+      // ── Headless / external-library wrappers (no AutoCAD plugin needed) ──
+      {
+        name: "audit_dwg_headless",
+        description: "Runs ezdxf audit + purge on a DWG/DXF file without launching AutoCAD. Wraps scripts/python/ezdxf_batch.py. Returns a JSON summary of errors, fixes and (optionally) writes a purged copy. Requires `pip install ezdxf` and (for DWG inputs) ODA File Converter.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            inputPath: { type: "string", description: "Absolute path to the .dwg or .dxf to audit" },
+            purgeOutputPath: { type: "string", description: "Optional. If provided, also writes a purged copy here." },
+            summaryOutputPath: { type: "string", description: "Optional path for the JSON summary (default: alongside input)." }
+          },
+          required: ["inputPath"]
+        }
+      },
+      {
+        name: "cad_to_shapefile",
+        description: "Exports DXF/DWG layers to GeoJSON / Shapefile / GeoPackage with optional EPSG reprojection. Wraps scripts/python/cad_to_gis.py. Use for cadastre / topo / zoning → QGIS workflows. Requires `pip install -r requirements.txt` (ezdxf + fiona + shapely + pyproj).",
+        inputSchema: {
+          type: "object",
+          properties: {
+            inputPath: { type: "string", description: "Absolute path to the .dwg or .dxf source" },
+            outputDir: { type: "string", description: "Folder to write the output files into" },
+            layers: { type: "string", description: "Comma-separated wildcard patterns, e.g. 'xref_sakutreba*,New_*nakvet*' (default: all)" },
+            epsgIn:  { type: "number", description: "Source EPSG code (default 32638 = Tbilisi UTM 38N)" },
+            epsgOut: { type: "number", description: "Target EPSG code (default 32638)" },
+            format:  { type: "string", enum: ["geojson", "shp", "gpkg"], description: "Output format (default 'geojson'). One file per CAD layer." }
+          },
+          required: ["inputPath", "outputDir"]
+        }
       }
     ]
   };
@@ -1391,6 +1471,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
   }
 
+  // ── Office-specific high-level wrappers ─────────────────────────
+  if (name === "analyze_stage_plan") {
+    return handleAnalyzeStagePlan(args);
+  }
+  if (name === "compute_grg_metrics") {
+    return handleComputeGrgMetrics(args);
+  }
+  if (name === "migrate_layers_to_standard") {
+    return handleMigrateLayersToStandard(args);
+  }
+  if (name === "audit_dwg_headless") {
+    return handleAuditDwgHeadless(args);
+  }
+  if (name === "cad_to_shapefile") {
+    return handleCadToShapefile(args);
+  }
+
   // ── Plugin-forwarded tools (direct pass-through) ─────────────
   // Map MCP tool names → Plugin command names
   const pluginCommandMap: Record<string, string> = {
@@ -1480,6 +1577,355 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   throw new McpError(ErrorCode.MethodNotFound, `Tool not found: ${name}`);
 });
+
+// ── Office-specific handlers ───────────────────────────────────
+
+/** Map of GRG functional-zone limits used by compute_grg_metrics validation. */
+const GRG_FZ_LIMITS: Record<string, { K1: number; FAR: number; K3: number }> = {
+  "LR-1": { K1: 0.30, FAR: 0.9, K3: 0.50 },
+  "LR-2": { K1: 0.40, FAR: 1.2, K3: 0.40 },
+  "MR":   { K1: 0.50, FAR: 2.5, K3: 0.30 },
+  "HR":   { K1: 0.50, FAR: 5.5, K3: 0.25 },
+  "MX":   { K1: 0.55, FAR: 4.0, K3: 0.20 },
+  "RC":   { K1: 0.10, FAR: 0.10, K3: 0.85 },
+};
+
+/**
+ * Wraps the analyze-stage-plan skill: ssget-dumps the modelspace, parses with
+ * analyze_v3.cjs, and (optionally) renders the Georgian DOCX report.
+ */
+async function handleAnalyzeStagePlan(args: Record<string, any>) {
+  const cwd = String(args.outputDir ?? process.cwd());
+  const generateDocx = args.generateDocx !== false;
+  const dumpLsp = path.join(SCRIPTS_DIR, "dump-stage-deep.lsp");
+  const log: string[] = [];
+
+  try {
+    await sendAutoCADCommand("run_lsp_script", { lspPath: dumpLsp });
+    log.push("Step 2 ✓ stage-dump-deep.txt written");
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: `analyze_stage_plan: dump step failed — ${err?.message ?? err}.\n` +
+              `Make sure AutoCAD is running and dismiss any modal dialog in the viewport.`
+      }],
+      isError: true,
+    };
+  }
+
+  const analyzer = path.join(cwd, "analyze_v3.cjs");
+  try {
+    await fs.access(analyzer);
+    const { stdout, stderr } = await execAsync(`node "${analyzer}"`, {
+      cwd,
+      timeout: 120_000,
+      maxBuffer: 50 * 1024 * 1024,
+    });
+    log.push(`Step 3 ✓ analyze_v3.cjs ran${stderr ? ` (stderr: ${stderr.slice(0, 200)})` : ""}`);
+    log.push(`  ${stdout.split("\n").slice(-3).join(" | ")}`);
+  } catch (err: any) {
+    log.push(`Step 3 ⚠ analyze_v3.cjs failed: ${err?.message ?? err}`);
+  }
+
+  if (generateDocx) {
+    const docxScript = path.join(cwd, "generate_report_docx.cjs");
+    try {
+      await fs.access(docxScript);
+      await execAsync(`node "${docxScript}"`, { cwd, timeout: 60_000 });
+      log.push("Step 8 ✓ STAGE_PLAN_REPORT_GE.docx generated");
+    } catch (err: any) {
+      log.push(`Step 8 ⚠ docx generation skipped: ${err?.message ?? err}`);
+    }
+  }
+
+  const reportPath = path.join(cwd, "stage-report-v3.json");
+  let report: any = null;
+  try {
+    report = JSON.parse(await fs.readFile(reportPath, "utf-8"));
+  } catch { /* report missing */ }
+
+  return {
+    content: [{
+      type: "text" as const,
+      text: [
+        "## analyze_stage_plan",
+        "",
+        ...log,
+        "",
+        report ? `### Summary\n${JSON.stringify(report.totals ?? report, null, 2).slice(0, 3000)}` : "(no JSON summary found)",
+      ].join("\n")
+    }]
+  };
+}
+
+/**
+ * Wraps the compute-grg-k skill: runs scripts/utilities/compute-grg-k.lsp inside
+ * AutoCAD, then reads the JSON it writes and (optionally) validates against FZ limits.
+ */
+async function handleComputeGrgMetrics(args: Record<string, any>) {
+  const floors = Number(args.floors ?? 1);
+  const fz = args.functionalZone ? String(args.functionalZone) : null;
+  const reportPath = path.join(process.cwd(), "grg-k-report.json");
+  const lsp = path.join(SCRIPTS_DIR, "utilities", "compute-grg-k.lsp");
+
+  try {
+    await sendAutoCADCommand("run_lsp_script", { lspPath: lsp });
+    await sendAutoCADCommand("run_command", { command: `(c:GrgK ${floors})` });
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: `compute_grg_metrics: AutoCAD step failed — ${err?.message ?? err}`
+      }],
+      isError: true,
+    };
+  }
+
+  let report: any;
+  try {
+    report = JSON.parse(await fs.readFile(reportPath, "utf-8"));
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: `compute_grg_metrics: could not read grg-k-report.json — make sure parcel polyline is on layer "PARCEL".`
+      }],
+      isError: true,
+    };
+  }
+
+  const issues: string[] = [];
+  if (fz && GRG_FZ_LIMITS[fz]) {
+    const lim = GRG_FZ_LIMITS[fz];
+    if (report.K1   > lim.K1)  issues.push(`K-1 ${report.K1.toFixed(3)} exceeds ${fz} max ${lim.K1}`);
+    if (report.K2_1_FAR > lim.FAR) issues.push(`FAR ${report.K2_1_FAR.toFixed(3)} exceeds ${fz} max ${lim.FAR}`);
+    if (report.K3 > 0 && report.K3 < lim.K3) issues.push(`K-3 ${report.K3.toFixed(3)} below ${fz} min ${lim.K3}`);
+  }
+
+  return {
+    content: [{
+      type: "text" as const,
+      text: [
+        "## compute_grg_metrics",
+        "",
+        JSON.stringify(report, null, 2),
+        "",
+        fz ? `### FZ ${fz} compliance` : "",
+        fz ? (issues.length === 0 ? "✓ all K-values within zone limits" : issues.map(i => `✗ ${i}`).join("\n")) : "",
+      ].filter(Boolean).join("\n")
+    }]
+  };
+}
+
+/**
+ * Wraps the remap-cyrillic-layers skill: optionally backs up, runs the LSP remap,
+ * optionally migrates fonts, then purges.
+ */
+async function handleMigrateLayersToStandard(args: Record<string, any>) {
+  const backup = args.backup !== false;
+  const forceFont = args.forceFontMigration === true;
+  const purge = args.purgeAfter !== false;
+  const lsp = path.join(SCRIPTS_DIR, "utilities", "layer-remap-to-standard.lsp");
+  const log: string[] = [];
+
+  if (backup) {
+    try {
+      await sendAutoCADCommand("run_command", {
+        command: `(command "_.SAVEAS" "2018" (strcat (vl-filename-base (getvar "DWGNAME")) "-PRE-REMAP.dwg"))`
+      });
+      log.push("Step 1 ✓ pre-remap backup saved");
+    } catch (err: any) {
+      log.push(`Step 1 ⚠ backup failed: ${err?.message ?? err}`);
+    }
+  }
+
+  try {
+    await sendAutoCADCommand("run_lsp_script", { lspPath: lsp });
+    await sendAutoCADCommand("run_command", { command: "(c:LayerRemap)" });
+    log.push("Step 3 ✓ layer-remap-to-standard.lsp executed");
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: `migrate_layers_to_standard: remap step failed — ${err?.message ?? err}`
+      }],
+      isError: true,
+    };
+  }
+
+  if (forceFont) {
+    const fontMigrationLisp = `
+(setq ss (ssget "_X" '((0 . "MTEXT"))))
+(if ss
+  (repeat (sslength ss)
+    (setq e (ssname ss 0))
+    (setq ed (entget e))
+    (setq new (vl-string-subst "\\\\fSylfaen|b0|i0;" "\\\\fArial|b0|i0|c204|p0;" (cdr (assoc 1 ed))))
+    (entmod (subst (cons 1 new) (assoc 1 ed) ed))
+    (setq ss (ssdel e ss))))`.trim();
+    try {
+      await sendAutoCADCommand("run_command", { command: fontMigrationLisp });
+      log.push("Step 5 ✓ MText font migrated to Sylfaen");
+    } catch (err: any) {
+      log.push(`Step 5 ⚠ font migration failed: ${err?.message ?? err}`);
+    }
+  }
+
+  if (purge) {
+    try {
+      await sendAutoCADCommand("run_command", { command: `(command "_.PURGE" "_LA" "*" "_N")` });
+      await sendAutoCADCommand("run_command", { command: `(command "_.PURGE" "_BL" "*" "_N")` });
+      log.push("Step 6 ✓ unused layers/blocks purged");
+    } catch (err: any) {
+      log.push(`Step 6 ⚠ purge failed: ${err?.message ?? err}`);
+    }
+  }
+
+  let report = "";
+  try {
+    report = await fs.readFile(path.join(process.cwd(), "layer-remap-report.txt"), "utf-8");
+  } catch { /* missing */ }
+
+  return {
+    content: [{
+      type: "text" as const,
+      text: [
+        "## migrate_layers_to_standard",
+        "",
+        ...log,
+        "",
+        report ? "### layer-remap-report.txt (head)" : "",
+        report ? report.split("\n").slice(0, 50).join("\n") : "",
+      ].filter(Boolean).join("\n")
+    }]
+  };
+}
+
+/**
+ * Wraps scripts/python/ezdxf_batch.py — runs `audit` and (optionally) `purge`
+ * on the given file. Requires `pip install ezdxf` (and ODA File Converter for
+ * DWG inputs).
+ */
+async function handleAuditDwgHeadless(args: Record<string, any>) {
+  const inputPath = String(args.inputPath ?? "").trim();
+  if (!inputPath) {
+    return { content: [{ type: "text" as const, text: "audit_dwg_headless: inputPath is required" }], isError: true };
+  }
+  const purgeOut = args.purgeOutputPath ? String(args.purgeOutputPath) : null;
+  const summaryOut = args.summaryOutputPath ? String(args.summaryOutputPath) : null;
+
+  const adapter = path.join(SCRIPTS_DIR, "python", "ezdxf_batch.py");
+  const log: string[] = [];
+
+  try {
+    const { stdout, stderr } = await execAsync(
+      `python "${adapter}" audit "${inputPath}"`,
+      { timeout: 120_000, maxBuffer: 10 * 1024 * 1024 }
+    );
+    log.push("### audit");
+    if (stdout) log.push(stdout.trim());
+    if (stderr) log.push(`(stderr) ${stderr.trim()}`);
+  } catch (err: any) {
+    log.push(`audit failed: ${err?.message ?? err}`);
+    if (err?.stdout)  log.push(String(err.stdout).trim());
+    if (err?.stderr)  log.push(`(stderr) ${String(err.stderr).trim()}`);
+  }
+
+  if (summaryOut || purgeOut) {
+    const summaryPath = summaryOut ?? `${inputPath}.summary.json`;
+    try {
+      const { stdout } = await execAsync(
+        `python "${adapter}" summary "${inputPath}" --out "${summaryPath}"`,
+        { timeout: 120_000, maxBuffer: 10 * 1024 * 1024 }
+      );
+      log.push("### summary");
+      log.push(`written → ${summaryPath}`);
+      if (stdout) log.push(stdout.trim());
+    } catch (err: any) {
+      log.push(`summary failed: ${err?.message ?? err}`);
+    }
+  }
+
+  if (purgeOut) {
+    try {
+      const { stdout } = await execAsync(
+        `python "${adapter}" purge "${inputPath}" "${purgeOut}"`,
+        { timeout: 180_000, maxBuffer: 10 * 1024 * 1024 }
+      );
+      log.push("### purge");
+      log.push(stdout.trim());
+    } catch (err: any) {
+      log.push(`purge failed: ${err?.message ?? err}`);
+    }
+  }
+
+  return {
+    content: [{
+      type: "text" as const,
+      text: ["## audit_dwg_headless", "", ...log].join("\n"),
+    }]
+  };
+}
+
+/**
+ * Wraps scripts/python/cad_to_gis.py — exports CAD layers to a GeoPackage or
+ * Shapefile with EPSG reprojection.
+ */
+async function handleCadToShapefile(args: Record<string, any>) {
+  const inputPath = String(args.inputPath ?? "").trim();
+  const outputDir = String(args.outputDir ?? "").trim();
+  if (!inputPath || !outputDir) {
+    return { content: [{ type: "text" as const, text: "cad_to_shapefile: inputPath and outputDir are required" }], isError: true };
+  }
+  const layers = args.layers ? String(args.layers) : "";
+  const epsgIn  = Number(args.epsgIn  ?? 32638);
+  const epsgOut = Number(args.epsgOut ?? 32638);
+  const format  = String(args.format ?? "geojson");
+
+  const adapter = path.join(SCRIPTS_DIR, "python", "cad_to_gis.py");
+  const cmd = [
+    "python", `"${adapter}"`,
+    `"${inputPath}"`, `"${outputDir}"`,
+    layers ? `--layers "${layers}"` : "",
+    `--epsg-in ${epsgIn}`,
+    `--epsg-out ${epsgOut}`,
+    `--format ${format}`,
+  ].filter(Boolean).join(" ");
+
+  try {
+    const { stdout, stderr } = await execAsync(cmd, {
+      timeout: 240_000,
+      maxBuffer: 20 * 1024 * 1024,
+    });
+    return {
+      content: [{
+        type: "text" as const,
+        text: [
+          "## cad_to_shapefile",
+          `cmd: ${cmd}`,
+          "",
+          stdout.trim(),
+          stderr ? `\n(stderr)\n${stderr.trim()}` : "",
+        ].join("\n"),
+      }]
+    };
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: [
+          "## cad_to_shapefile (failed)",
+          `cmd: ${cmd}`,
+          err?.message ?? String(err),
+          err?.stdout ? `\nstdout:\n${String(err.stdout).trim()}` : "",
+          err?.stderr ? `\nstderr:\n${String(err.stderr).trim()}` : "",
+        ].join("\n"),
+      }],
+      isError: true,
+    };
+  }
+}
 
 // ── generate_house_plan handler ────────────────────────────────
 async function handleGenerateHousePlan(args: Record<string, unknown>) {

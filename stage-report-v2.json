@@ -1,0 +1,516 @@
+{
+  "per_bina": [
+    {
+      "bina": 8,
+      "pos": {
+        "x": 475292171.47,
+        "y": 4621104228.236
+      },
+      "d_target_m": 19.03,
+      "flat_m2": 85.6,
+      "rooms": [
+        3.6
+      ],
+      "wall_lines_count": 14,
+      "wall_lines_len_m": 7.25,
+      "wall_polys_perim_m": 0,
+      "doors": 40,
+      "windows": 26,
+      "columns": 1,
+      "inserts": 13,
+      "insert_blocks": {
+        "Dining Table Round 24": 1,
+        "Bed Layout 23_3": 1,
+        "Sofa Set 01 26": 1,
+        "Wardrobe 01 26_2": 1,
+        "Bidet 26": 2,
+        "Multi-Basin Counter 26": 2,
+        "Bed Layout 23_4": 2,
+        "Wardrobe 01 26": 1,
+        "Sofa 23": 1,
+        "Shower Tray 26": 1
+      },
+      "dim_count": 5,
+      "footprint_bbox": {
+        "minx": 475288124.343,
+        "miny": 4621099921.12,
+        "maxx": 475297669.235,
+        "maxy": 4621110216.315,
+        "size_m": {
+          "x": 9.54,
+          "y": 10.3
+        }
+      },
+      "room_total_m2": 3.6
+    },
+    {
+      "bina": 9,
+      "pos": {
+        "x": 475285194.19,
+        "y": 4621101732.503
+      },
+      "d_target_m": 11.8,
+      "flat_m2": 65.6,
+      "rooms": [
+        11
+      ],
+      "wall_lines_count": 0,
+      "wall_lines_len_m": 0,
+      "wall_polys_perim_m": 0,
+      "doors": 34,
+      "windows": 16,
+      "columns": 0,
+      "inserts": 17,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 2,
+        "Wardrobe 01 26_11": 1,
+        "Wardrobe 01 26_9": 1,
+        "Dining Table Rectangle 24": 1,
+        "Designer Table 05 26": 1,
+        "Bidet 26": 2,
+        "Multi-Basin Counter 26": 2,
+        "Sofa 23": 1,
+        "Bed Layout 23": 1,
+        "Washer 26": 1,
+        "Shower Tray 26_3": 1,
+        "Bed Layout 23_2": 1,
+        "Kitchen Layout 26_6": 1
+      },
+      "dim_count": 4,
+      "footprint_bbox": null,
+      "room_total_m2": 11
+    },
+    {
+      "bina": 10,
+      "pos": {
+        "x": 475278025.787,
+        "y": 4621100575.326
+      },
+      "d_target_m": 6.2,
+      "flat_m2": 63.7,
+      "rooms": [
+        7.9
+      ],
+      "wall_lines_count": 2,
+      "wall_lines_len_m": 1.4,
+      "wall_polys_perim_m": 0,
+      "doors": 11,
+      "windows": 18,
+      "columns": 1,
+      "inserts": 9,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 1,
+        "Wardrobe 01 26_10": 1,
+        "Shower Tray 26_2": 1,
+        "Bed Layout 23": 1,
+        "Sofa 23": 1,
+        "Designer Table 05 26": 1,
+        "Kitchen Layout 26_5": 1,
+        "Dining Table Rectangle 24": 1
+      },
+      "dim_count": 1,
+      "footprint_bbox": {
+        "minx": 475277024.534,
+        "miny": 4621095366.431,
+        "maxx": 475277519.508,
+        "maxy": 4621096766.431,
+        "size_m": {
+          "x": 0.49,
+          "y": 1.4
+        }
+      },
+      "room_total_m2": 7.9
+    },
+    {
+      "bina": 22,
+      "pos": {
+        "x": 475273422.38,
+        "y": 4621106442.351
+      },
+      "d_target_m": 11.77,
+      "flat_m2": 46,
+      "rooms": [
+        8,
+        3.6
+      ],
+      "wall_lines_count": 14,
+      "wall_lines_len_m": 6.45,
+      "wall_polys_perim_m": 0.76,
+      "doors": 18,
+      "windows": 16,
+      "columns": 1,
+      "inserts": 11,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 1,
+        "Wardrobe 01 26_12": 1,
+        "Wardrobe 01 26_3": 1,
+        "Bed Layout 23": 2,
+        "Shower Tray 26_4": 1,
+        "Dining Table Rectangle 24_2": 1,
+        "Wardrobe 01 26_6": 1,
+        "Sofa 23": 1,
+        "Designer Table 05 26": 1
+      },
+      "dim_count": 8,
+      "footprint_bbox": {
+        "minx": 475266724.343,
+        "miny": 4621110016.267,
+        "maxx": 475276044.258,
+        "maxy": 4621111866.436,
+        "size_m": {
+          "x": 9.32,
+          "y": 1.85
+        }
+      },
+      "room_total_m2": 11.6
+    },
+    {
+      "bina": 23,
+      "pos": {
+        "x": 475272715.617,
+        "y": 4621100000.343
+      },
+      "d_target_m": 5.88,
+      "flat_m2": 68.5,
+      "rooms": [
+        12.1
+      ],
+      "wall_lines_count": 1,
+      "wall_lines_len_m": 0.9,
+      "wall_polys_perim_m": 1.58,
+      "doors": 27,
+      "windows": 16,
+      "columns": 1,
+      "inserts": 15,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 1,
+        "Wardrobe 01 26_15": 1,
+        "Wardrobe 01 26_14": 1,
+        "Dining Table Rectangle 24": 1,
+        "Designer Table 05 26": 1,
+        "Sofa 23": 1,
+        "Bed Layout 23": 1,
+        "Shower Tray 26_7": 1,
+        "Bidet 26": 2,
+        "Multi-Basin Counter 26": 1,
+        "Wardrobe 01 26_7": 1,
+        "Kitchen Layout 26_7": 1,
+        "Kitchen Layout 26_4": 1
+      },
+      "dim_count": 1,
+      "footprint_bbox": {
+        "minx": 475274097.955,
+        "miny": 4621094944.64,
+        "maxx": 475276044.258,
+        "maxy": 4621096022.836,
+        "size_m": {
+          "x": 1.95,
+          "y": 1.08
+        }
+      },
+      "room_total_m2": 12.1
+    },
+    {
+      "bina": 24,
+      "pos": {
+        "x": 475257196.653,
+        "y": 4621099327.361
+      },
+      "d_target_m": 18.93,
+      "flat_m2": 68.3,
+      "rooms": [
+        12.1
+      ],
+      "wall_lines_count": 1,
+      "wall_lines_len_m": 0.9,
+      "wall_polys_perim_m": 0,
+      "doors": 14,
+      "windows": 16,
+      "columns": 0,
+      "inserts": 10,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 1,
+        "Wardrobe 01 26_14": 1,
+        "Dining Table Rectangle 24": 1,
+        "Designer Table 05 26": 1,
+        "Sofa 23": 1,
+        "Bed Layout 23": 1,
+        "Bidet 26": 1,
+        "Wardrobe 01 26_3": 1,
+        "Kitchen Layout 26_7": 1
+      },
+      "dim_count": 0,
+      "footprint_bbox": {
+        "minx": 475255614.331,
+        "miny": 4621095386.436,
+        "maxx": 475256250.731,
+        "maxy": 4621096022.836,
+        "size_m": {
+          "x": 0.64,
+          "y": 0.64
+        }
+      },
+      "room_total_m2": 12.1
+    },
+    {
+      "bina": 25,
+      "pos": {
+        "x": 475257971.207,
+        "y": 4621105227.906
+      },
+      "d_target_m": 20.45,
+      "flat_m2": 45.8,
+      "rooms": [
+        8,
+        3.6
+      ],
+      "wall_lines_count": 15,
+      "wall_lines_len_m": 7.95,
+      "wall_polys_perim_m": 0.76,
+      "doors": 33,
+      "windows": 16,
+      "columns": 1,
+      "inserts": 17,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 1,
+        "Wardrobe 01 26_17": 4,
+        "Bidet 26": 1,
+        "Multi-Basin Counter 26": 1,
+        "Shower Tray 26_6": 1,
+        "Sofa 23": 1,
+        "Designer Table 05 26": 1,
+        "Dining Table Rectangle 24": 1,
+        "Bed Layout 23_5": 1,
+        "Wardrobe 01 26_16": 1,
+        "Shower Tray 26_8": 1,
+        "Bed Layout 23": 1,
+        "Kitchen Layout 26_8": 1
+      },
+      "dim_count": 3,
+      "footprint_bbox": {
+        "minx": 475254309.637,
+        "miny": 4621106087.849,
+        "maxx": 475263624.343,
+        "maxy": 4621111866.436,
+        "size_m": {
+          "x": 9.31,
+          "y": 5.78
+        }
+      },
+      "room_total_m2": 11.6
+    },
+    {
+      "bina": 37,
+      "pos": {
+        "x": 475252152.542,
+        "y": 4621096552.884
+      },
+      "d_target_m": 23.51,
+      "flat_m2": 63.7,
+      "rooms": [
+        7.9
+      ],
+      "wall_lines_count": 2,
+      "wall_lines_len_m": 1.4,
+      "wall_polys_perim_m": 1.3,
+      "doors": 11,
+      "windows": 18,
+      "columns": 2,
+      "inserts": 11,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 1,
+        "Wardrobe 01 26_10": 1,
+        "Wardrobe 01 26_5": 1,
+        "Shower Tray 26_3": 1,
+        "Sofa 23": 1,
+        "Designer Table 05 26": 1,
+        "Shower Tray 26_2": 1,
+        "Bed Layout 23": 1,
+        "Kitchen Layout 26_3": 1,
+        "Dining Table Rectangle 24": 1
+      },
+      "dim_count": 2,
+      "footprint_bbox": {
+        "minx": 475252829.281,
+        "miny": 4621091211.795,
+        "maxx": 475255474.343,
+        "maxy": 4621095046.778,
+        "size_m": {
+          "x": 2.65,
+          "y": 3.83
+        }
+      },
+      "room_total_m2": 7.9
+    },
+    {
+      "bina": 38,
+      "pos": {
+        "x": 475245084.625,
+        "y": 4621097712.006
+      },
+      "d_target_m": 30.65,
+      "flat_m2": 65.6,
+      "rooms": [
+        11
+      ],
+      "wall_lines_count": 0,
+      "wall_lines_len_m": 0,
+      "wall_polys_perim_m": 0,
+      "doors": 34,
+      "windows": 16,
+      "columns": 0,
+      "inserts": 18,
+      "insert_blocks": {
+        "Flat Panel TV 26": 1,
+        "Flexible Shelf 26": 2,
+        "Wardrobe 01 26_11": 1,
+        "Wardrobe 01 26_9": 1,
+        "Wardrobe 01 26_4": 2,
+        "Washer 26": 1,
+        "Multi-Basin Counter 26": 2,
+        "Bidet 26": 2,
+        "Dining Table Rectangle 24": 1,
+        "Designer Table 05 26": 1,
+        "Sofa 23": 1,
+        "Bed Layout 23_2": 1,
+        "Bed Layout 23": 1,
+        "Kitchen Layout 26": 1
+      },
+      "dim_count": 4,
+      "footprint_bbox": null,
+      "room_total_m2": 11
+    },
+    {
+      "bina": 39,
+      "pos": {
+        "x": 475238110.017,
+        "y": 4621099943.68
+      },
+      "d_target_m": 37.83,
+      "flat_m2": 85.6,
+      "rooms": [
+        3.6
+      ],
+      "wall_lines_count": 14,
+      "wall_lines_len_m": 7.25,
+      "wall_polys_perim_m": 0,
+      "doors": 40,
+      "windows": 28,
+      "columns": 1,
+      "inserts": 15,
+      "insert_blocks": {
+        "Wardrobe 01 26_13": 1,
+        "Wardrobe 01 26_8": 1,
+        "Sofa Set 01 26": 1,
+        "Wardrobe 01 26_2": 1,
+        "Bidet 26": 2,
+        "Multi-Basin Counter 26": 2,
+        "Bed Layout 23_4": 2,
+        "Wardrobe 01 26": 1,
+        "Sofa 23": 1,
+        "Dining Table Round 24": 1,
+        "Shower Tray 26": 1,
+        "Bed Layout 23_3": 1
+      },
+      "dim_count": 2,
+      "footprint_bbox": {
+        "minx": 475232679.451,
+        "miny": 4621095766.484,
+        "maxx": 475242224.343,
+        "maxy": 4621106061.673,
+        "size_m": {
+          "x": 9.54,
+          "y": 10.3
+        }
+      },
+      "room_total_m2": 3.6
+    }
+  ],
+  "totals": {
+    "flat_total_m2": 658.4,
+    "wall_lines_m": 33.5,
+    "wall_polys_m": 4.4,
+    "columns_total": 8,
+    "doors_total": 262,
+    "windows_total": 186,
+    "inserts_total_in_clusters": 136,
+    "dims_total_in_clusters": 30,
+    "rooms_labelled": 12
+  },
+  "dimensions_global": {
+    "total_dims": 248,
+    "valid_meas": 236,
+    "min_mm": 0.2,
+    "max_mm": 63.9,
+    "median_mm": 1.5,
+    "mean_mm": 3.9,
+    "top_value_buckets_mm": {
+      "0": 234,
+      "100": 2
+    }
+  },
+  "doors_windows": {
+    "door_polys_count_total": 275,
+    "window_polys_count_total": 308,
+    "typical_window_widths_mm": [],
+    "typical_window_heights_mm": [],
+    "typical_door_widths_mm": []
+  },
+  "text_inventory": {
+    "bina_labels": [
+      {
+        "id": 9,
+        "text": "bina #9"
+      },
+      {
+        "id": 25,
+        "text": "bina #25"
+      },
+      {
+        "id": 22,
+        "text": "bina #22"
+      },
+      {
+        "id": 24,
+        "text": "bina #24"
+      },
+      {
+        "id": 38,
+        "text": "bina #38"
+      },
+      {
+        "id": 37,
+        "text": "bina #37"
+      },
+      {
+        "id": 39,
+        "text": "bina #39"
+      },
+      {
+        "id": 23,
+        "text": "bina #23"
+      },
+      {
+        "id": 8,
+        "text": "bina #8"
+      },
+      {
+        "id": 10,
+        "text": "bina #10"
+      }
+    ],
+    "other_labels": [
+      "warmosaxviTi mijna",
+      "i0 c0 p0;0)",
+      "0 c0 p0;20)",
+      "b tipis bina"
+    ]
+  }
+}

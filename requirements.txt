@@ -1,0 +1,21 @@
+# Python dependencies for the headless CAD adapters under scripts/python/.
+#
+# Install with:
+#     pip install -r requirements.txt
+#
+# Tested on Windows 10/11 + Python 3.12. Versions are pinned to the
+# combination smoke-tested by scripts/python/ezdxf_batch.py and
+# scripts/python/cad_to_gis.py.
+
+# Core DXF reader / writer
+ezdxf==1.4.3
+
+# GIS export stack — fiona ships its own GDAL on Windows
+fiona==1.10.1
+shapely==2.1.2
+pyproj==3.7.2
+
+# Transitive but useful to pin
+numpy>=2.0
+fonttools>=4.62
+pyparsing>=3.3

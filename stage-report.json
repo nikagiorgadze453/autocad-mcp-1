@@ -1,0 +1,305 @@
+{
+  "drawing": {
+    "dwg": "Drawing1.dwg",
+    "insunits": "4",
+    "extmin": "(100096.0 1613.38 0.0)",
+    "extmax": "(4.75306e+08 4.62112e+09 0.0)",
+    "total": 6091
+  },
+  "target_coord": {
+    "x": 475275599.4,
+    "y": 4621094871.3
+  },
+  "flat_totals": {
+    "count": 20,
+    "grand_total_m2": 1316.8,
+    "items": [
+      {
+        "m2": 46,
+        "pos": {
+          "x": 475272635.1,
+          "y": 4621105587.8
+        },
+        "handle": "7956"
+      },
+      {
+        "m2": 45.8,
+        "pos": {
+          "x": 475257421.8,
+          "y": 4621104439.2
+        },
+        "handle": "796A"
+      },
+      {
+        "m2": 85.6,
+        "pos": {
+          "x": 475291586.2,
+          "y": 4621103393.7
+        },
+        "handle": "7965"
+      },
+      {
+        "m2": 65.6,
+        "pos": {
+          "x": 475284500.5,
+          "y": 4621100912.9
+        },
+        "handle": "7960"
+      },
+      {
+        "m2": 63.7,
+        "pos": {
+          "x": 475277444.7,
+          "y": 4621099774.4
+        },
+        "handle": "795D"
+      },
+      {
+        "m2": 85.6,
+        "pos": {
+          "x": 475237494.8,
+          "y": 4621099201.6
+        },
+        "handle": "7949"
+      },
+      {
+        "m2": 68.5,
+        "pos": {
+          "x": 475272003.7,
+          "y": 4621099088.8
+        },
+        "handle": "7973"
+      },
+      {
+        "m2": 68.3,
+        "pos": {
+          "x": 475256652.2,
+          "y": 4621098545.6
+        },
+        "handle": "7978"
+      },
+      {
+        "m2": 65.6,
+        "pos": {
+          "x": 475244533.3,
+          "y": 4621096758.3
+        },
+        "handle": "794E"
+      },
+      {
+        "m2": 63.7,
+        "pos": {
+          "x": 475251509.4,
+          "y": 4621095716.7
+        },
+        "handle": "7953"
+      },
+      {
+        "m2": 46,
+        "pos": {
+          "x": 147501.8,
+          "y": 69187.5
+        },
+        "handle": "522E"
+      },
+      {
+        "m2": 45.8,
+        "pos": {
+          "x": 132288.5,
+          "y": 68038.9
+        },
+        "handle": "5242"
+      },
+      {
+        "m2": 85.6,
+        "pos": {
+          "x": 166452.9,
+          "y": 66993.4
+        },
+        "handle": "523D"
+      },
+      {
+        "m2": 65.6,
+        "pos": {
+          "x": 159367.2,
+          "y": 64512.6
+        },
+        "handle": "5238"
+      },
+      {
+        "m2": 63.7,
+        "pos": {
+          "x": 152311.4,
+          "y": 63374.1
+        },
+        "handle": "5235"
+      },
+      {
+        "m2": 85.6,
+        "pos": {
+          "x": 112361.5,
+          "y": 62801.3
+        },
+        "handle": "5221"
+      },
+      {
+        "m2": 68.5,
+        "pos": {
+          "x": 146870.4,
+          "y": 62688.5
+        },
+        "handle": "524B"
+      },
+      {
+        "m2": 68.3,
+        "pos": {
+          "x": 131518.9,
+          "y": 62145.3
+        },
+        "handle": "5250"
+      },
+      {
+        "m2": 65.6,
+        "pos": {
+          "x": 119400,
+          "y": 60358
+        },
+        "handle": "5226"
+      },
+      {
+        "m2": 63.7,
+        "pos": {
+          "x": 126376.1,
+          "y": 59316.4
+        },
+        "handle": "522B"
+      }
+    ]
+  },
+  "flat_rows": [
+    {
+      "row": 1,
+      "y_avg_mm": 4621101368,
+      "flats": [
+        85.6,
+        68.3,
+        45.8,
+        68.5,
+        46,
+        63.7,
+        65.6,
+        85.6
+      ],
+      "sum_m2": 529.1
+    },
+    {
+      "row": 2,
+      "y_avg_mm": 4621096237,
+      "flats": [
+        65.6,
+        63.7
+      ],
+      "sum_m2": 129.3
+    },
+    {
+      "row": 3,
+      "y_avg_mm": 64968,
+      "flats": [
+        85.6,
+        68.3,
+        45.8,
+        68.5,
+        46,
+        63.7,
+        65.6,
+        85.6
+      ],
+      "sum_m2": 529.1
+    },
+    {
+      "row": 4,
+      "y_avg_mm": 59837,
+      "flats": [
+        65.6,
+        63.7
+      ],
+      "sum_m2": 129.3
+    }
+  ],
+  "rooms": {
+    "count": 36,
+    "grand_total_m2": 258.8,
+    "histogram": {
+      "3.6": 8,
+      "0.6": 8,
+      "12.1": 4,
+      "8.0": 4,
+      "17.3": 4,
+      "11.0": 4,
+      "7.9": 4
+    }
+  },
+  "inserts": {
+    "total": 292,
+    "kitchens": 20,
+    "dining": 20,
+    "other": 252,
+    "by_block": {
+      "Bidet 26": 24,
+      "Bed Layout 23": 22,
+      "Flat Panel TV 26": 20,
+      "Flexible Shelf 26": 20,
+      "Multi-Basin Counter 26": 20,
+      "Sofa 23": 20,
+      "Designer Table 05 26": 20,
+      "Dining Table Rectangle 24": 14,
+      "Wardrobe 01 26_17": 8,
+      "Bed Layout 23_4": 8,
+      "Wardrobe 01 26_14": 4,
+      "Dining Table Round 24": 4,
+      "Bed Layout 23_3": 4,
+      "Wardrobe 01 26_11": 4,
+      "Wardrobe 01 26_10": 4,
+      "Wardrobe 01 26_9": 4,
+      "Sofa Set 01 26": 4,
+      "Wardrobe 01 26_2": 4,
+      "Wardrobe 01 26": 4,
+      "Shower Tray 26": 4,
+      "Shower Tray 26_2": 4,
+      "Wardrobe 01 26_3": 4,
+      "Washer 26": 4,
+      "Shower Tray 26_3": 4,
+      "Bed Layout 23_2": 4,
+      "Wardrobe 01 26_4": 4,
+      "Kitchen Layout 26_7": 4,
+      "Kitchen Layout 26_2": 4,
+      "Shower Tray 26_6": 2,
+      "Bed Layout 23_5": 2,
+      "Wardrobe 01 26_16": 2,
+      "Shower Tray 26_8": 2,
+      "Multi-Basin Counter 26_3": 2,
+      "Wardrobe 01 26_15": 2,
+      "Shower Tray 26_7": 2,
+      "Multi-Basin Counter 26_2": 2,
+      "Wardrobe 01 26_13": 2,
+      "Wardrobe 01 26_12": 2,
+      "Wardrobe 01 26_8": 2,
+      "Shower Tray 26_4": 2,
+      "Wardrobe 01 26_7": 2,
+      "Dining Table Rectangle 24_2": 2,
+      "Wardrobe 01 26_6": 2,
+      "Wardrobe 01 26_5": 2,
+      "Kitchen Layout 26_8": 2,
+      "Kitchen Layout 26_6": 2,
+      "Kitchen Layout 26_5": 2,
+      "Kitchen Layout 26_4": 2,
+      "Kitchen Layout 26_3": 2,
+      "Kitchen Layout 26": 2
+    }
+  },
+  "closed_polylines": {
+    "count": 0,
+    "sum_area_m2": 0,
+    "by_layer_m2": {}
+  }
+}

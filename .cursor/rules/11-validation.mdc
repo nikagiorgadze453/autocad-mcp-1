@@ -1,0 +1,109 @@
+---
+description: Validation pipeline — what to run and in what order before issuing
+alwaysApply: true
+---
+
+# Validation pipeline
+
+Before any drawing leaves the office it must pass these checks **in the
+order shown**. Stop at the first failure and report.
+
+## Stage 1 — Quick layout sanity
+
+When the layout is still a JSON / structured object (before drawing):
+
+```
+validate_layout_quick(layout)
+```
+
+Fails on:
+- room area below СНиП minimum (rule `09-snip-neufert.mdc`)
+- door / window widths not in the standard schedule (rule `02-units-dims.mdc`, `05-typology-bina.mdc`)
+- circulation < 900 mm
+
+## Stage 2 — Drawing structural validation
+
+After geometry is created in modelspace:
+
+```
+validate_drawing
+```
+
+Fails on:
+- standard 11 layer set absent (rule `02-units-dims.mdc`)
+- duplicated geometry (lines on top of lines)
+- text not on `TEXT` layer / dim not on `DIM` layer
+- MText not using `\fSylfaen` override (rule `00-georgian-text.mdc`)
+- title block missing (rule `01-title-block.mdc`)
+
+## Stage 3 — Metrics
+
+```
+compute_metrics(contextJsonPath)
+```
+
+Reports:
+- room count, area totals
+- glazing ratio per room (must be ≥ 1/8)
+- circulation ratio (corridor m² / total m²)
+- furniture coverage per room
+
+## Stage 4 — Per-typology check (`scripts/validators/`)
+
+```
+(load "scripts/validators/check-min-rooms.lsp")        ; СНиП minima
+(load "scripts/validators/check-title-block.lsp")      ; title block presence
+```
+
+## Stage 5 — GRG cross-check (when applicable)
+
+```
+(load "scripts/utilities/compute-grg-k.lsp")
+```
+
+Returns K1, K2, K2-1 (FAR), K3 and compares against the FZ thresholds in
+rule `06-grg-coefficients.mdc`.
+
+## Stage 6 — Visual self-check
+
+```
+(command "_.ZOOM" "_E")
+(command "_.REGENALL")
+```
+
+Then export a screenshot via the MCP `export_to_image` tool and inspect
+manually.
+
+## Stage 7 — Issue
+
+Only after stages 1 – 6 pass:
+
+```
+(command "_.QSAVE")
+;; export PDF / DXF as needed:
+batch_export(format = "pdf", out_folder = "...")
+```
+
+## Failure-report format
+
+When a check fails, return a JSON like:
+
+```
+{
+  "stage": "Stage 2",
+  "rule": "02-units-dims.mdc",
+  "check": "standard layer set",
+  "missing": ["WALL", "DOOR", "WINDOW"],
+  "found":   ["A-Wall", "kar-panjara_*", "Doors_*"],
+  "fix":     "run scripts/utilities/layer-remap-to-standard.lsp"
+}
+```
+
+Always include the **rule reference** + the **fix command** in every
+failure entry.
+
+## When to skip stages
+
+- Conceptual sketches: only Stage 1.
+- Quick re-do of an existing sheet: Stage 2 + 3 + 6.
+- Final issue / handover: every stage, no skips.

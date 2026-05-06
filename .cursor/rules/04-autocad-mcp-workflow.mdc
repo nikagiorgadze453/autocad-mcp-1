@@ -1,0 +1,29 @@
+---
+description: AutoCAD MCP workflow for drawing, validation, and execution
+alwaysApply: true
+---
+
+# AutoCAD MCP Workflow
+
+When working in this project, use the real MCP tools exposed by
+`user-autocad`.
+
+## Before Drawing
+
+- Confirm AutoCAD target version: 2026 or 2027.
+- Use millimeters for drawing coordinates unless a tool schema explicitly says
+  metres.
+- Load Georgian text style and standard layers.
+- For complex drawings, create `.lsp` or `.scr` files in `scripts/`.
+
+## Executing
+
+- Use `run_command` for short AutoCAD commands or LISP expressions.
+- Use `execute_script_file` for batch/headless `.scr` workflows.
+- Use `list_available_scripts` before referencing existing scripts.
+
+## After Generating Architecture
+
+- Run `validate_layout_quick` when the layout is still structured data.
+- Run `validate_drawing` and `compute_metrics` after context extraction.
+- Report failed checks before saving final output.

@@ -1,0 +1,252 @@
+---
+description: Curated index of third-party AutoCAD / DWG / GIS libraries we trust and when to reach for them
+alwaysApply: true
+---
+
+# External libraries — what to use when
+
+The office's `autocad-mcp` is glue, not a wheel-reinventing factory. When
+the user asks for something that one of the libraries below already
+solves, **prefer the library**. Each entry lists: install command, when
+to use, gotchas, and the wrapper inside this repo.
+
+## Quick decision matrix
+
+| If the user asks for… | Use |
+|---|---|
+| Import blocks / layers / styles from another DWG | **Lee Mac `Steal.lsp`** + skill `steal-from-template` |
+| Headless DWG/DXF batch ops (no AutoCAD running) | **ezdxf** + skill `dxf-headless-batch` |
+| DXF/DWG → Shapefile / GeoPackage / EPSG reproj | **CAD_to_GIS** + skill `cad-to-gis` |
+| Pythonic in-process AutoCAD scripting | **PyRx** (`pip install cad-pyrx`) |
+| Drawing audit / fix proxies / dynamic-to-static | **FinalCAD/FINALCAD-CleanAndFix** (`FCCLEAN` cmd) |
+| Plot generation / cadastre / urban routines | **vjspab/autocad-lisp-toolkit** |
+| Wall centerline extraction from 2D plans | **beastt1992/WallCenterline** |
+| Sun-path / insolation analysis (СНиП §6) | **FreeCAD Solar workbench** or **archilume** |
+| IFC interop (BIM ↔ DWG) | **IfcOpenShell** + Bonsai Blender add-on |
+| Pure-Rust DXF/DWG read/write | **acadrust**, **ezdwg** |
+
+---
+
+## L01 — Lee Mac `Steal.lsp`
+
+> The single most useful AutoLISP routine ever written.
+
+| Field | Value |
+|---|---|
+| Source | https://www.lee-mac.com/steal.html |
+| License | Free (no resale; redistribution per author's terms) |
+| Vendor location | `scripts/vendor/lee-mac/Steal.lsp` |
+| Wrapper | `scripts/utilities/steal-from-template.lsp` |
+| Skill | `.cursor/skills/steal-from-template/` |
+
+Imports any combination of *blocks, layers, linetypes, dim styles, text
+styles, table styles, MLeader styles, layouts, page setups, groups,
+materials, multileader styles* from one DWG to another. Use this every
+time we set up a new project from a reference DWG in
+`wetransfer_03_xref_saproeqto_*` or `wetransfer_19_xref_grg_*`.
+
+Variants:
+
+- `Steal` — interactive picker
+- `StealAll` — grab everything
+- `StealLast` — re-uses the last source DWG
+- `StealTemplate` / `StealTemplates` — pulls from `.dwt`
+
+**Gotcha:** Steal.lsp is **not on GitHub**; it must be downloaded and
+placed manually at `scripts/vendor/lee-mac/Steal.lsp`. See
+`scripts/vendor/README.md`.
+
+---
+
+## L02 — ezdxf
+
+| Field | Value |
+|---|---|
+| Source | https://github.com/mozman/ezdxf |
+| License | MIT |
+| Install | `pip install ezdxf` |
+| Wrapper | `scripts/python/ezdxf_batch.py` |
+| Skill | `.cursor/skills/dxf-headless-batch/` |
+
+Headless Python library for DXF R12 → R2018. Read **and write**, no
+AutoCAD required. Use whenever:
+
+- We're batch-processing dozens of DWGs (open one is too slow).
+- The user is on a non-Windows box.
+- We need raw DXF surgery (delete by handle, edit XDATA, rewrite header).
+- We need `ezdxf audit` to fix corrupt files **before** opening them.
+
+**Gotcha:** ezdxf reads DXF natively; for **DWG** input use
+`ODA File Converter` (free, by Open Design Alliance) to first convert
+DWG → DXF, then process. The CAD_to_GIS plugin does this transparently.
+
+---
+
+## L03 — CAD_to_GIS (we use **fiona**, not raw GDAL)
+
+| Field | Value |
+|---|---|
+| Source (inspiration) | https://github.com/skyflying/CAD_to_GIS |
+| QGIS plugin | https://github.com/skyflying/CAD_to_GIS_QGIS_Plugin |
+| License | MIT |
+| Install (Python) | `pip install -r requirements.txt` |
+| Wrapper | `scripts/python/cad_to_gis.py` |
+| Skill | `.cursor/skills/cad-to-gis/` |
+
+Converts DXF (and DWG via auto-conversion) layers to **GeoJSON** (default),
+ESRI Shapefile, or single-layer GeoPackage with EPSG reprojection.
+Implemented with **fiona + shapely + pyproj** because raw GDAL bindings
+are a pain on Windows / Python 3.12 — fiona ships its own GDAL build.
+
+Use when:
+
+- The user needs `xref_sakutreba.dwg` in QGIS.
+- Cadastre layers must go to the gov GIS (EPSG:32638 for Tbilisi).
+- We want polygon attributes from MText labels.
+
+Output is **one file per CAD layer**. To merge into a single multi-layer
+GeoPackage, run `ogrmerge.py -f GPKG -single -o all.gpkg out/*.gpkg`.
+
+**Gotchas:**
+- Block references are exploded by ezdxf before geometry conversion.
+- 3D polylines flatten to 2D — losing Z.
+- GPKG multi-layer single-file mode hits a fiona NULL-pointer bug on
+  Windows; we work around by writing one `.gpkg` per layer.
+
+---
+
+## L04 — vjspab/autocad-lisp-toolkit
+
+| Field | Value |
+|---|---|
+| Source | https://github.com/vjspab/autocad-lisp-toolkit |
+| License | MIT |
+| Install | clone into `scripts/vendor/autocad-lisp-toolkit/` |
+
+Urban planning / land subdivision LISP routines we can mine for the
+GRG workflow:
+
+| Command | Use |
+|---|---|
+| `GENBLOCK` / `MAKEPLOTS` | parametric plot generation |
+| `MAKEPOLY` / `CopyClosedPolygons` | polygon utilities |
+| `AUTODIM` / `PLOTDIM` | plot dimensioning (saves rebuilding our own) |
+| `CSVEXPORT` | dump plot table to CSV |
+
+Use these as **donor scripts** — copy the routine into our
+`scripts/templates/` if it fits, with attribution + license header.
+
+---
+
+## L05 — FinalCAD/FINALCAD-CleanAndFix
+
+| Field | Value |
+|---|---|
+| Source | https://github.com/FinalCAD/FINALCAD-CleanAndFix |
+| License | MIT |
+| Install | NETLOAD the released DLL, or merge into our `autocad-plugin/` |
+
+Open-source AutoCAD .NET plugin with the same architecture as ours:
+
+| Command | What it does |
+|---|---|
+| `FCCLEAN` | reconciles + unlocks layers, erases proxies |
+| `FCDYNTOSTATIC` | converts dynamic blocks to static |
+| `FCBLACK` / `FCDARKER` / `FCGRAYSCALE` | colour-mass changes |
+| layer filter helpers | quickly hide/show per filter |
+
+We can either reference its commands directly, or port the relevant
+ones into `autocad-plugin/CommandProcessor.cs` (license-compatible).
+
+---
+
+## L06 — beastt1992/WallCenterline
+
+| Field | Value |
+|---|---|
+| Source | https://github.com/beastt1992/WallCenterline |
+| License | check upstream |
+| Use | analyse 3rd-party DWGs that lack centerlines |
+
+When a client sends a DWG with only solid-hatched walls (no centerline
+geometry), this routine derives a centerline polyline by skeletonising
+the wall hatch. We need it before any of our `bina-b-type`-style
+generators can re-use the geometry.
+
+---
+
+## L07 — PyRx
+
+| Field | Value |
+|---|---|
+| Source | https://github.com/CEXT-Dan/PyRx |
+| License | LGPL-3.0 |
+| Install | `pip install cad-pyrx` (Windows + AutoCAD 2023–2027) |
+| Use | in-process Python automation, replacing pyautocad ActiveX |
+
+Loads as an `.arx` plugin. Commands: `PYLOAD`, `PYRELOAD`, `PYDEBUG`,
+`PYCMDPROMPT`. Use when our LISP scripts hit performance limits and
+we want to leverage NumPy / Pandas inside AutoCAD.
+
+---
+
+## L08 — IfcOpenShell + Bonsai
+
+| Field | Value |
+|---|---|
+| Source | https://github.com/IfcOpenShell/IfcOpenShell |
+| License | LGPL-3.0 |
+| Install | `pip install ifcopenshell` ; Bonsai = Blender add-on |
+| Use | IFC ↔ DWG round-trip when a project comes from BIM |
+
+Convert `.ifc` → mesh / `.dxf` via `IfcConvert`. Useful when a client
+sends Revit/ArchiCAD output and we need to extract geometry into our
+DWG-based workflow.
+
+---
+
+## L09 — FreeCAD Solar workbench / archilume
+
+| Field | Value |
+|---|---|
+| Solar | https://github.com/Francisco-Rosa/Solar |
+| archilume | https://github.com/vincentlogarzo/archilume |
+| Sun simulator | https://github.com/SeanWong17/building-sunlight-simulator |
+| Use | СНиП 2.07.01-89 §6 insolation check (≥ 2 h Mar 22 / Sep 22) |
+
+When a Tbilisi residential project needs proof of 2.5 h of direct
+sunlight on March 22 / September 22, run a sun-path study in one of
+these tools. Tbilisi @ 41.7° N, EPSG:32638. Export results to PNG +
+hours-per-room CSV and embed in the FZ sheet's `xref_sxivebi`.
+
+---
+
+## L10 — LibreDWG / ezdwg / acadrust
+
+| Field | Value |
+|---|---|
+| LibreDWG | https://github.com/LibreDWG/libredwg (C, GPL-3) |
+| ezdwg | https://github.com/monozukuri-ai/ezdwg (Rust + Python) |
+| acadrust | https://github.com/hakanaktt/acadrust (Rust, dual-license) |
+| Use | server-side DWG read **without** AutoCAD or ODA File Converter |
+
+For pipelines that must stay 100% open-source. Slower than ezdxf-on-DXF,
+but reads DWG directly.
+
+---
+
+## House rules for using external libraries
+
+1. **License hygiene.** Always note the license in the vendor README
+   and at the top of each adapter. GPL libs (LibreDWG) cannot be
+   shipped inside proprietary plugins.
+2. **Version pin.** Pin every Python lib in `requirements.txt`
+   (`ezdxf==1.4.4`, `cad-pyrx==2.2.50`, etc.).
+3. **One adapter per library**, never call the lib directly from the
+   MCP server. Adapters live in `scripts/python/` or
+   `scripts/utilities/` and expose a single CLI / `c:` entry point.
+4. **Vendored LSPs** go to `scripts/vendor/<author>/<file>.lsp` and are
+   `git`-ignored if the license forbids redistribution.
+5. **Skills wrap adapters.** Every adapter has a matching skill at
+   `.cursor/skills/<name>/SKILL.md` with a workflow checklist and
+   pitfalls.

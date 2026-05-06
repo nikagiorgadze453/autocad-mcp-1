@@ -1,0 +1,122 @@
+{
+  "drawing": "Drawing1.dwg",
+  "currentRedCluster": {
+    "polylinesUsed": [
+      {
+        "index": 0,
+        "vertices": 16,
+        "bbox": {
+          "minX": 476538,
+          "minY": 4618152.7,
+          "maxX": 476695,
+          "maxY": 4618256.8
+        }
+      },
+      {
+        "index": 1,
+        "vertices": 10,
+        "bbox": {
+          "minX": 476623.9,
+          "minY": 4618254.6,
+          "maxX": 476722.6,
+          "maxY": 4618349.9
+        }
+      },
+      {
+        "index": 2,
+        "vertices": 10,
+        "bbox": {
+          "minX": 476622.4,
+          "minY": 4618348.9,
+          "maxX": 476712.3,
+          "maxY": 4618391.7
+        }
+      },
+      {
+        "index": 3,
+        "vertices": 10,
+        "bbox": {
+          "minX": 476559.5,
+          "minY": 4618255.6,
+          "maxX": 476625.2,
+          "maxY": 4618384.2
+        }
+      },
+      {
+        "index": 4,
+        "vertices": 20,
+        "bbox": {
+          "minX": 476429.1,
+          "minY": 4618261.2,
+          "maxX": 476484.1,
+          "maxY": 4618368.2
+        }
+      },
+      {
+        "index": 5,
+        "vertices": 32,
+        "bbox": {
+          "minX": 476354.1,
+          "minY": 4618305.8,
+          "maxX": 476677.2,
+          "maxY": 4618441.6
+        }
+      },
+      {
+        "index": 6,
+        "vertices": 13,
+        "bbox": {
+          "minX": 476528,
+          "minY": 4618256.1,
+          "maxX": 476586.9,
+          "maxY": 4618310.2
+        }
+      },
+      {
+        "index": 7,
+        "vertices": 10,
+        "bbox": {
+          "minX": 476483,
+          "minY": 4618260.6,
+          "maxX": 476529.9,
+          "maxY": 4618306.4
+        }
+      }
+    ],
+    "bounds": {
+      "minX": 476354.146,
+      "maxX": 476722.64,
+      "minY": 4618152.706,
+      "maxY": 4618441.615
+    }
+  },
+  "metrics": {
+    "siteArea": 62115,
+    "blocks": 8,
+    "footprint": 6249,
+    "gfa": 62960,
+    "green": 53910,
+    "parking": 45,
+    "trees": 71,
+    "k1": "0.101",
+    "k2": "1.014",
+    "k3": "0.87",
+    "redPolylinesUsed": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "validation": {
+    "noPlotFrameAdded": true,
+    "blockHeights": "8-12 floors, selected per block label",
+    "containment": "All primary rectangles are sampled against the current red cluster before drawing.",
+    "conflictAvoidance": "Building boxes reject overlaps; parking rejects overlaps with buildings and roads.",
+    "assumption": "The current red cluster is treated as the development area because no single active boundary polyline was selected."
+  }
+}

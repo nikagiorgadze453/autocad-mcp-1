@@ -1,0 +1,89 @@
+---
+description: Sheet code map — what each prefix means and what xrefs / layers it expects
+alwaysApply: true
+---
+
+# Sheet codes — cross-reference
+
+Every issued sheet must carry a code on the title block (row 3:
+`ფურცელი:`). The codes below come from the office reference set
+(`19_xref_grg/`, `03_xref_saproeqto/`, `04_Xref_saproeqto/`).
+
+## Architectural / structural
+
+| Code | Meaning (Georgian) | Drawing type | Common scale |
+|---|---|---|---|
+| `ა-NN` | არქიტექტურა | Architectural floor plan, section, elevation | 1 : 50, 1 : 100 |
+| `კ-NN` | კონსტრუქცია | Reinforced-concrete construction | 1 : 50 |
+| `ფნ-NN` | ფუნდამენტი | Foundation plan | 1 : 50 |
+| `გ-NN` | გენგეგმა | Site / general plan | 1 : 200, 1 : 500 |
+| `ფ-NN` | ფასადი | Elevation | 1 : 100 |
+| `ჭ-NN` | ჭრილი | Section | 1 : 50, 1 : 100 |
+| `ი-NN` | ინტერიერი | Interior layout | 1 : 50 |
+
+## GRG (general regulation plan) sheets
+
+| Code | Meaning |
+|---|---|
+| `FZ-1` … `FZ-8` | ფუნქციური ზონა — functional zone |
+| `MZL-FZ` / `MZL-SZ` / `MZL-TSZ` | მიწათსარგებლობის ზონა — land-use overlays |
+| `CIG` / `CIP` / `CIS` / `CIW` | building footprint / parking / staircase / waste |
+| `CIR-1` / `CIR-2` | recreation / green areas |
+| `CTS-12` | transport / traffic |
+| `CVC-4` | vehicle circulation |
+| `CZLSZ` / `CZVCNZ` | utility / engineering zones |
+
+## Expected xrefs per sheet code
+
+| Sheet | Required xrefs |
+|---|---|
+| `გ-NN` (gengegma) | `xref_topo`, `xref_sakutreba`, `xref_shenobebi`, `xref_gzebi`, `xref_gantavseba` |
+| `FZ-N` | `xref_zonireba`, `xref_gengegma`, `xref_topo`, `xref_sakutreba` |
+| `ა-NN` | (no xref — pure architecture) |
+| `კ-NN` | optional `xref_arxitektura.dwg` underlay |
+| `MZL-…` | `xref_zonireba`, `xref_topo`, parcel cadastre |
+| `CIG` / `CIP` | `xref_gantavseba`, `xref_topo`, optional `xref_miwisqvesha_parkingi` |
+| `CIR-N` | `xref_gamwvaneba`, `xref_topo` |
+| `CTS-12` | `xref_gzebi da trotuarebi`, `xref_topo` |
+
+## File-naming convention
+
+Issued PDFs follow `GRG to PDF-<CODE>.pdf`:
+
+```
+GRG to PDF-A1.pdf
+GRG to PDF-FZ3.pdf
+GRG to PDF-MZLSZ.pdf
+GRG to PDF-CIR1.pdf
+```
+
+Working DWGs use Georgian transliteration:
+
+```
+gengegma-2026-04.dwg
+fundamenti-k44.dwg
+fasadi-aghmosavleti.dwg
+```
+
+## Sheet sizes (mm)
+
+| Format | W × H | Used for |
+|---|---|---|
+| A4 | 297 × 210 | details |
+| A3 | 420 × 297 | small plans, section pieces |
+| A2 | 594 × 420 | apartment plans |
+| A1 | 841 × 594 | floor / GRG sheets |
+| A0 | 1 189 × 841 | site plans, master plan |
+
+## Decision tree
+
+```
+Is the drawing about urban regulation?
+  ├── Yes → GRG sheet code (FZ-, MZL-, CI-, CT-, CV-, CZ-)
+  └── No
+       ├── Concrete/steel structure?      → კ-NN
+       ├── Foundation only?                → ფნ-NN
+       ├── Architectural plan/sect/elev?   → ა-NN
+       ├── Interior?                       → ი-NN
+       └── Whole site?                     → გ-NN (also exists as GRG `g-`)
+```

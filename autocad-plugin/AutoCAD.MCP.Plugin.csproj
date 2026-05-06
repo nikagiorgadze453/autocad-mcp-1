@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -13,15 +13,15 @@
 
   <ItemGroup>
     <Reference Include="AcCoreMgd">
-      <HintPath>C:\Program Files\Autodesk\AutoCAD 2026\AcCoreMgd.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2027\AcCoreMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcDbMgd">
-      <HintPath>C:\Program Files\Autodesk\AutoCAD 2026\AcDbMgd.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2027\AcDbMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcMgd">
-      <HintPath>C:\Program Files\Autodesk\AutoCAD 2026\AcMgd.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2027\AcMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

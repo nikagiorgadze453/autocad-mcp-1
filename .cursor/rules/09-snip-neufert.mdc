@@ -1,0 +1,155 @@
+---
+description: СНиП 2.07.01-89 + Neufert + Raumpilot distilled cheat-sheet
+alwaysApply: true
+---
+
+# СНиП 2.07.01-89 + Neufert — quick reference
+
+Compressed values for use *inside the chat* without reading 800 PDF pages.
+For the **legally binding** value always re-open the source PDF in
+`C:\Users\PCZONE.GE\Downloads\wetransfer_03_xref_saproeqto_*\kanonmdebloba\`.
+
+## Minimum room sizes (residential)
+
+| Room | Min area (m²) | Min clear width (mm) | Source |
+|---|---|---|---|
+| Master bedroom | **12** | 2 700 | СНиП 5.1 |
+| Bedroom | **9** | 2 400 | СНиП 5.1 |
+| Living room | **16** | 3 000 | СНиП 5.1 |
+| Living + bedroom (combined) | **20** | 3 200 | Neufert ch. 6 |
+| Kitchen (full) | **6** (8 if also dining) | 1 800 | СНиП 5.1 |
+| Kitchen-niche | 4 | 1 500 | СНиП 5.1 |
+| Bathroom (full WC + bath) | **3.3** | 1 500 | СНиП 5.1 |
+| WC only | 1.0 | 900 | СНиП 5.1 |
+| Hallway / corridor | — | **900** (1 100 ADA) | СНиП 5.3 |
+| Vestibule (entry) | 1.4 | 1 200 | СНиП 5.3 |
+
+## Minimum flat areas
+
+| Type | Min area (m²) |
+|---|---|
+| 1-room | 28 |
+| 2-room | 44 |
+| 3-room | 56 |
+| 4-room | 70 |
+
+## Floor-to-ceiling heights
+
+| Use | Min clear height (mm) |
+|---|---|
+| Residential rooms | 2 500 |
+| Kitchen | 2 500 |
+| Bathroom / WC | 2 200 |
+| Corridor | 2 100 |
+| Stair landings | 2 100 |
+
+## Stairs
+
+| Parameter | Value |
+|---|---|
+| Riser | 150 – 175 mm |
+| Tread | 280 – 300 mm |
+| `2R + T` (golden formula) | 600 – 650 mm |
+| Min flight width (1 family) | 900 mm |
+| Min flight width (apartments) | 1 050 mm |
+| Min flight width (escape) | 1 200 mm |
+| Max riser count per flight | 18 |
+| Min landing depth | flight width |
+
+## Door clear openings (Neufert)
+
+| Door | Width × Height (mm) |
+|---|---|
+| Bedroom interior | 800 × 2 100 |
+| Bathroom | 700 × 2 100 |
+| WC | 600 × 2 000 |
+| Front entry | 900 × 2 100 |
+| Accessible | **900** clear (frame ≥ 950) × 2 100 |
+| Balcony / sliding | 1 800 × 2 100 |
+
+## Window typical sizes
+
+| Use | W × H (mm) |
+|---|---|
+| Bedroom | 1 200 – 1 500 × 1 400 |
+| Living | 1 600 – 1 800 × 1 400 |
+| Kitchen | 1 200 × 1 400 |
+| Bathroom vent | 600 – 700 × 600 – 800 |
+| Corridor | not required |
+
+## Fenestration ratio (`ფანჯარა / ოთახი`)
+
+- Daylight factor: **window area ≥ 1/8 of room floor area**
+  (СНиП 23-05-95 + Neufert ch. 5).
+- Bathroom: window optional if mechanical vent + duct ≥ 100 mm Ø.
+
+## Parking ratios (СНиП 2.07.01-89)
+
+| Building type | Stalls per 100 m² of usable area |
+|---|---|
+| Residential | 1.0 |
+| Office | 1.5 |
+| Retail | 2.0 |
+| Hotel | 1.0 / room |
+| Restaurant | 4.0 / 100 m² |
+| Cinema | 5.0 / 100 seats |
+
+## Distances between buildings (fire + insolation)
+
+| Geometry | Min distance (m) |
+|---|---|
+| Two RC residential blocks | h (taller) |
+| Two timber buildings | 1.5 × h |
+| Building to property line | h / 2 |
+| RC to school / kindergarten | 25 |
+| RC to hospital | 30 |
+
+## Insolation (СНиП 2.07.01-89 §6)
+
+- Each habitable room must receive ≥ **2.5 h** of direct sunlight on
+  March 22 / September 22 in zones N of 50° (Tbilisi @ 41.7° gets ≥ 2 h).
+- N-facing only: increase neighbour distance by 50 % or use offset.
+
+## Bathroom equipment (Neufert ch. 7)
+
+| Fixture | Footprint (mm) | Clear in front (mm) |
+|---|---|---|
+| Toilet | 380 × 700 | 600 |
+| Bathtub | 1 700 × 700 | 700 |
+| Shower tray | 900 × 900 | 700 |
+| Basin (single) | 600 × 500 | 600 |
+| Bidet | 380 × 700 | 600 |
+| Washer | 600 × 600 | 600 |
+
+## Kitchen equipment (Neufert ch. 7 + Raumpilot Wohnen)
+
+| Fixture | Footprint (mm) | Clear in front (mm) |
+|---|---|---|
+| Sink (single) | 600 × 600 | 1 000 |
+| Cooker | 600 × 600 | 1 000 |
+| Fridge (full height) | 600 × 600 | 1 000 |
+| Dishwasher | 600 × 600 | 1 000 |
+| Counter (linear) | depth 600 | 1 000 work zone |
+
+Min linear kitchen counter for one-cook layout: **2 400 mm** (Raumpilot 5.2).
+
+## Accessibility (`N41 dadgenileba`)
+
+| Element | Requirement |
+|---|---|
+| Ramp slope | ≤ 1 : 12 (8.3 %) |
+| Door clear opening | ≥ 900 mm |
+| Threshold step | ≤ 14 mm |
+| Accessible WC | ≥ 1.65 × 1.80 m, with grab bars |
+| Lift cabin | ≥ 1.10 × 1.40 m for wheelchair |
+| Corridor turn | 1.50 × 1.50 m wheelchair turn area |
+| Counter height | 800 – 900 mm |
+| Switch height | 900 – 1 100 mm |
+
+## How I use this rule
+
+1. Check every generated room against the minimum (`§ Minimum room sizes`).
+2. Check every door / window against the standard schedule (`§ Door / Window typical sizes`).
+3. Check every flat against the per-type minimum area.
+4. If anything fails — flag in the validation report with reference to the
+   exact СНиП § / Neufert chapter / `N41` clause.

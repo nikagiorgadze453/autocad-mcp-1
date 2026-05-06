@@ -1,0 +1,30 @@
+{
+  "drawing": "Drawing1.dwg",
+  "boundaryVertices": 30,
+  "bounds": {
+    "minU": -4.612541071859848,
+    "maxU": 406.23962348372453,
+    "minV": -0.06949630343277136,
+    "maxV": 182.19072625561563
+  },
+  "metrics": {
+    "siteArea": 65480,
+    "blocks": 10,
+    "footprint": 10080,
+    "gfa": 70560,
+    "parkingCount": 186,
+    "green": 49503,
+    "k1": "0.154",
+    "k2": "1.078",
+    "k3": "0.76",
+    "roadSegments": 15,
+    "trees": 66,
+    "angleDeg": 5.451
+  },
+  "validation": {
+    "allGeneratedPrimaryGeometryUsesInsideChecks": true,
+    "buildingClearanceMeters": ">= 7.0 from boundary by corner checks",
+    "roadParkingConflictCheck": "parking candidates rejected when overlapping buildings",
+    "missingLegalInputs": "Exact zoning class, cadastral restrictions, easements, and confirmed municipal K limits were not provided; layout uses conservative GRG-style assumptions."
+  }
+}

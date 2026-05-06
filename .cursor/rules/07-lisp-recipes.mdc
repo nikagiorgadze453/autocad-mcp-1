@@ -1,0 +1,167 @@
+---
+description: Copy-paste LISP snippets — load Sylfaen, dump entities, areas, xrefs
+alwaysApply: true
+---
+
+# LISP recipes
+
+Atomic, ready-to-paste snippets. Prefer these over rolling your own.
+
+## R01 — Load Sylfaen text style
+
+```
+(command "_.-STYLE" "GEO" "Sylfaen.ttf" "0" "1" "0" "N" "N" "N")
+```
+
+For BPG family (fallback):
+
+```
+(command "_.-STYLE" "GEO" "BPGExcelsiorCaps.ttf" "0" "1" "0" "N" "N" "N")
+```
+
+## R02 — Set drawing units to mm
+
+```
+(setvar "INSUNITS" 4)         ; 4 = mm
+(setvar "MEASUREMENT" 1)      ; metric
+(setvar "LUNITS" 2)           ; decimal
+(setvar "AUNITS" 0)           ; degrees
+```
+
+## R03 — Create the standard 11-layer set
+
+```
+(defun mk-layer (name color)
+  (command "_.-LAYER" "_M" name "_C" color "" ""))
+
+(mk-layer "WALL"        "7")
+(mk-layer "WALL-INNER"  "8")
+(mk-layer "DOOR"        "4")
+(mk-layer "WINDOW"      "5")
+(mk-layer "FURN"        "3")
+(mk-layer "FIX"         "6")
+(mk-layer "GRID"        "1")
+(mk-layer "AXIS-LABEL"  "1")
+(mk-layer "DIM"         "2")
+(mk-layer "TEXT"        "7")
+(mk-layer "TITLE"       "7")
+```
+
+## R04 — Attach an xref by absolute path
+
+```
+(command "_.-XATTACH" "C:/path/to/xref_topo.dwg" "0,0,0" "1" "1" "0")
+```
+
+## R05 — Insert MText with Georgian inline override
+
+```
+(defun ge (s) (strcat "\\fSylfaen|b0|i0;" s))
+(command "_.-MTEXT" "0,0" "0,3000" (ge "ფუნდამენტის გეგმა"))
+```
+
+## R06 — Compute the area of a closed LWPOLYLINE
+
+```
+(defun poly-area (e / o) (vlax-curve-getarea (vlax-ename->vla-object e)))
+```
+
+## R07 — Iterate every entity in modelspace (`ssget X`)
+
+```
+(setq ss (ssget "_X"))
+(repeat (sslength ss)
+  (setq e (ssname ss 0))
+  (setq ed (entget e))
+  ;; ... do work ...
+  (setq ss (ssdel e ss)))
+```
+
+## R08 — Filter by type and/or layer
+
+```
+(ssget "_X" '((0 . "LWPOLYLINE") (8 . "WALL")))
+(ssget "_X" '((0 . "INSERT")    (2 . "Kitchen Layout 26")))
+(ssget "_X" '((0 . "DIMENSION")))
+```
+
+## R09 — Get bounding box of an entity (vla)
+
+```
+(defun bb (e / o lo hi)
+  (setq o (vlax-ename->vla-object e))
+  (setq lo (vlax-3d-point '(0 0 0)) hi (vlax-3d-point '(0 0 0)))
+  (vla-getboundingbox o 'lo 'hi)
+  (list (vlax-safearray->list (vlax-variant-value lo))
+        (vlax-safearray->list (vlax-variant-value hi))))
+```
+
+## R10 — Write JSON to a file
+
+```
+(setq fp (open "C:/Users/PCZONE.GE/autocad-mcp/out.json" "w"))
+(write-line (strcat "{\"key\":" (rtos value 2 3) "}") fp)
+(close fp)
+```
+
+> Always use forward slashes in paths from LISP.
+> Always quote strings with `\"` inside `strcat`.
+
+## R11 — Run an external `.scr` headless
+
+```
+(command "_.SCRIPT" "C:/Users/PCZONE.GE/autocad-mcp/scripts/run_dims.scr")
+```
+
+## R12 — Save the active drawing
+
+```
+(command "_.QSAVE")
+;; or save under new name:
+(command "_.SAVEAS" "2018" "C:/path/file.dwg")
+```
+
+## R13 — Insert a block at a point
+
+```
+(command "_.-INSERT" "BlockName" "100,200" "1" "1" "0")
+```
+
+## R14 — Create a closed rectangular polyline
+
+```
+(defun rect (x1 y1 x2 y2 layer)
+  (command "_.-LAYER" "_S" layer "")
+  (command "_.PLINE"
+           (list x1 y1) (list x2 y1) (list x2 y2) (list x1 y2) "_C"))
+```
+
+## R15 — Batch zoom-extents + plot to PDF
+
+```
+(command "_.ZOOM" "_E")
+(command "_.-PLOT" "_Y" "_Layout1" "DWG To PDF.pc3" "ANSI A (8.50 x 11.00 Inches)"
+         "_M" "_L" "_N" "_E" "1=1" "_C" "_Y" "monochrome.ctb" "_Y" "_N"
+         "C:/path/out.pdf" "_N" "_Y")
+```
+
+## R16 — One-line dimension creator (DIMLINEAR)
+
+```
+(command "_.DIMLINEAR" "100,100" "5600,100" "100,-1500")
+```
+
+## R17 — Linear LFAC trick for georeferenced models
+
+When the drawing is in mm but dimensions should display in metres,
+set `DIMLFAC = 0.001` once per Dim style:
+
+```
+(setvar "DIMLFAC" 0.001)
+```
+
+## R18 — Run a `.lsp` from inside another `.lsp`
+
+```
+(load "C:/Users/PCZONE.GE/autocad-mcp/scripts/utilities/load-sylfaen.lsp")
+```

@@ -1,0 +1,70 @@
+---
+description: Always render Georgian text correctly via Sylfaen + UTF-8
+alwaysApply: true
+---
+
+# Georgian Text in AutoCAD MCP
+
+All user-facing text in drawings must be in **Georgian** unless the user
+explicitly asks otherwise.
+
+## Hard rules
+
+1. **Never send Georgian via PowerShell**.
+   PowerShell on Windows downgrades non-ASCII to `?`. Use a Node.js script
+   (`axios.post(...)`) so the request body is real UTF-8.
+
+2. **Always set the Georgian text style first**, once per drawing:
+   ```
+   (command "_.-STYLE" "GEO" "Sylfaen.ttf" "0" "1" "0" "N" "N" "N")
+   ```
+
+3. **Always wrap MText with the inline font override** so it renders even
+   if a different style is current:
+   ```js
+   const ge = (text) => `\\FSylfaen|b0|i0;${text}`;
+   await MText(x, y, ge('ფუნდამენტის გეგმა'), 600, 25000, 'TEXT');
+   ```
+
+4. For multi-line MText, separate lines with `\\P`, not `\n`.
+
+5. Fallback fonts if Sylfaen is missing on the machine, in this order:
+   `BPG Excelsior Caps`, `Arial Unicode MS`, `Noto Sans Georgian`.
+
+## Common Georgian terms (use these spellings)
+
+| English          | Georgian         |
+|------------------|------------------|
+| project          | პროექტი          |
+| drawing          | ნახაზი           |
+| sheet            | ფურცელი          |
+| scale            | მასშტაბი         |
+| date             | თარიღი           |
+| drawn by         | შემსრულებელი     |
+| plan             | გეგმა            |
+| section          | ჭრილი            |
+| elevation        | ფასადი           |
+| foundation       | ფუნდამენტი       |
+| wall             | კედელი           |
+| door             | კარი             |
+| window           | ფანჯარა          |
+| living room      | მისაღები         |
+| dining           | სასადილო         |
+| kitchen          | სამზარეულო       |
+| bedroom          | საძინებელი       |
+| master bedroom   | მთავარი საძინებელი |
+| bathroom         | აბაზანა          |
+| corridor         | დერეფანი         |
+| entry            | შესასვლელი       |
+| legend           | აღნიშვნები       |
+| note             | შენიშვნა         |
+| total            | სულ              |
+| length           | სიგრძე           |
+| width            | სიგანე           |
+| height           | სიმაღლე          |
+| area             | ფართი            |
+| column           | სვეტი            |
+| beam             | კოჭი             |
+| slab             | ფილა             |
+| stair            | კიბე             |
+| roof             | სახურავი         |
