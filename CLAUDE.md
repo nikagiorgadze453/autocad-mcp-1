@@ -1,7 +1,7 @@
 # CLAUDE.md — AutoCAD MCP for Georgian Architecture
 
 > **Self-contained brief for Claude Code.** Claude Code does not
-> auto-load `.cursor/rules/`. This file is the inlined mirror of the 14
+> auto-load `.cursor/rules/`. This file is the inlined mirror of the 15
 > Cursor rules so any session starts with full context.
 >
 > If you have any doubt about a value here, check the matching
@@ -331,8 +331,8 @@ autocad-mcp/
 ├── README.md                  User-facing (architects)
 ├── package.json
 ├── .cursor/                   Cursor-specific
-│   ├── rules/*.mdc            14 rule files
-│   └── skills/*/SKILL.md      9 skills
+│   ├── rules/*.mdc            15 rule files
+│   └── skills/*/SKILL.md      12 skills
 ├── src/                       MCP server (TypeScript)
 ├── dist/                      Compiled MCP server
 ├── autocad-plugin/            .NET plugin loaded into AutoCAD
@@ -345,6 +345,44 @@ autocad-mcp/
 │   └── vendor/                3rd-party (license-aware)
 ├── blocks/                    DWG block library
 └── docs/                      Public docs
+```
+
+---
+
+## Analysis & validation tools (new — 2026-05-22)
+
+Three MCP tools turn a DWG into structured JSON that can be reasoned over:
+
+### `extract_rooms`
+Polygonises wall geometry with shapely and matches each polygon to the
+nearest Georgian / Latin-transliterated label (`bina 41.0`, `samzareulo`,
+`saZinebeli`, …). Output `<dwg>.walls.rooms.json` with per-room
+`area_m2`, `centroid`, `label`, `label_mkhedruli`, `claimed_m2`, and
+`delta_m2`. The Latin → Mkhedruli table for the office's old Avaza /
+Acadmtav fonts lives in `scripts/python/polygonize_rooms.py` (TRANSLIT).
+
+### `extract_blocks`
+Walks the DWG BlockTable and `WBLOCK`s each user-defined block to
+`outputDir/<safe-name>.dwg` + `index.json`. Skips anonymous, xref,
+layout, and dynamic-block-instance blocks. Use to build a reusable
+block library from a reference DWG (see `blocks/uni/` for the result on
+UNI B2 — 71 named blocks).
+
+### `compute_insolation`
+СНиП 2.07.01-89 §6 daylight check. Reads `<dwg>.walls.rooms.json` (must
+have polygons — pass `keepPolygon: true` to `extract_rooms`), derives
+each room's facade orientations, and reports per-room direct sunlight
+hours on 22 Mar / 22 Sep against the 2.5 h threshold. Pure stdlib —
+the solar position math is in `scripts/python/solar.py`. Tbilisi
+defaults built in (41.7151 N, 44.8271 E, UTC+04).
+
+Combined pipeline:
+
+```
+extract_rooms ({inputPath, keepPolygon:true})
+  -> <dwg>.walls.rooms.json (with polygons)
+  -> compute_insolation ({roomsJson})
+  -> <dwg>.walls.insolation.json
 ```
 
 ---

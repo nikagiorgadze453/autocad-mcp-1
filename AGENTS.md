@@ -117,6 +117,9 @@ there.
 | `steal-from-template` | Imports blocks/layers/styles from a reference DWG via Lee Mac's Steal.lsp |
 | `dxf-headless-batch` | Batch DXF/DWG ops (audit, purge, layer rename, font swap) via ezdxf — no AutoCAD required |
 | `cad-to-gis` | DXF/DWG → Shapefile / GeoPackage with EPSG reprojection |
+| `extract-rooms` | Per-room polygons + m² via shapely polygonisation + Latin→Mkhedruli label matching |
+| `extract-blocks` | Builds a stand-alone block library from any DWG (`outputDir/*.dwg` + `index.json`) |
+| `compute-insolation` | Per-room direct-sunlight hours for the СНиП 2.07.01-89 §6 daylight check |
 
 ---
 
@@ -223,6 +226,9 @@ sheet's drawing type.
 | "Audit / purge / rename layers in N drawings" | `dxf-headless-batch` |
 | "Send the cadastre to QGIS / make a shapefile" | `cad-to-gis` |
 | "Use a UNI plan as the starting point" | `steal-from-template` + xref UNI Bx |
+| "How many m² is each room / apartment?" | `extract-rooms` |
+| "Build a block library from this DWG" | `extract-blocks` |
+| "Do these rooms get enough sunlight? / СНиП §6 check" | `compute-insolation` |
 
 ---
 
@@ -244,6 +250,9 @@ sheet's drawing type.
 | `migrate_layers_to_standard` | wraps the remap skill |
 | `audit_dwg_headless` | wraps `scripts/python/ezdxf_batch.py audit` (no AutoCAD needed) |
 | `cad_to_shapefile` | wraps `scripts/python/cad_to_gis.py` (no AutoCAD needed) |
+| `extract_rooms` | polygonises walls + matches Georgian / Latin room labels → per-room m² |
+| `extract_blocks` | exports every user block in a DWG to `outputDir/<name>.dwg` + index.json |
+| `compute_insolation` | per-room sunlight hours for the СНиП 2.07.01-89 §6 daylight check |
 | `export_to_image` / `batch_export` | screenshots, PDF |
 
 Full schemas and 45+ geometry/modify/layer tools are listed in `README.md`.

@@ -1,0 +1,141 @@
+---
+description: Insolation / direct-sunlight rules for Tbilisi residential buildings — СНиП 2.07.01-89 §6, the `N41 dadgenileba` accessibility cross-checks, and the `compute_insolation` MCP tool wiring.
+globs: ["*.dwg", "*.rooms.json", "*.insolation.json"]
+alwaysApply: true
+---
+
+# Insolation / sun-hours
+
+Tbilisi sits at **41.7151° N, 44.8271° E** (UTM zone 38 N). Direct
+sunlight per **СНиП 2.07.01-89 §6** is mandatory in every habitable
+residential room, in the dose set below.
+
+## Legal threshold (СНиП 2.07.01-89 §6)
+
+| Where | Min direct sunlight on… | Hours |
+|---|---|---|
+| Habitable room (north of 58° N) | 22 Mar / 22 Sep | **3.0** |
+| Habitable room (48–58° N)       | 22 Mar / 22 Sep | **2.5** |
+| Habitable room (south of 48° N — **Tbilisi**) | 22 Mar / 22 Sep | **2.5** |
+| Same in winter (22 Dec)         | n/a (not required) |     |
+
+Notes:
+
+- Auxiliary rooms (`damxmare farTi`, vestibule, corridor, WC, kitchen
+  niche, storage) are **NOT** required to be insolated. Filter the
+  `compute_insolation` output to habitable rooms only (bedroom, living,
+  combined L+K) before judging pass/fail.
+- A single window facing within ±90° of the sun direction qualifies.
+  If the window has a reveal / deep jamb, reduce `half_acceptance_deg`
+  to 70–80°.
+- A combined exposure (e.g. corner room with two windows on two facades)
+  may total the two intervals if they don't overlap.
+
+## How to compute
+
+Use the MCP tool `compute_insolation` (or the CLI `scripts/python/compute_insolation.py`):
+
+```jsonc
+compute_insolation({
+  "roomsJson": "C:/path/to/UNI B2.walls.rooms.json",
+  "date":      "2026-03-22",
+  "lat":       41.7151,
+  "lon":       44.8271,
+  "timezoneOffset": 4,
+  "thresholdH": 2.5
+})
+```
+
+Prerequisites:
+
+- The rooms.json must contain `polygon` vertices, so re-run
+  `polygonize_rooms.py` with `--keep-polygon` first (or set
+  `keepPolygon: true` on the `extract_rooms` MCP call).
+- No external solar library is needed. `scripts/python/solar.py`
+  implements the simplified NOAA solar position algorithm.
+
+## Pipeline
+
+```
+extract_rooms                       (LSP + shapely)
+   |
+   v
+<dwg>.walls.rooms.json (with polygons)
+   |
+   v
+compute_insolation (Python, no extra deps)
+   |
+   v
+<dwg>.walls.insolation.json
+```
+
+## Output JSON shape
+
+```jsonc
+{
+  "source": "UNI B2.walls.rooms.json",
+  "lat": 41.7151, "lon": 44.8271, "date": "2026-03-22",
+  "threshold_h": 2.5,
+  "rooms_total": 1410,
+  "rooms_pass":  1401,
+  "rooms_fail":  9,
+  "rooms": [
+    {
+      "id": 313,
+      "label": "bina 42.0",
+      "label_mkhedruli": "ბინა 42.0",
+      "area_m2": 47.5,
+      "facades": [
+        { "azimuth":   0, "length_m": 14.7, "hours": 0.2 },
+        { "azimuth":  90, "length_m":  4.6, "hours": 6.0 },
+        { "azimuth": 180, "length_m":  7.8, "hours": 11.8 },
+        { "azimuth": 270, "length_m":  5.0, "hours": 6.1 }
+      ],
+      "best_azimuth": 180, "best_hours": 11.83,
+      "worst_azimuth": 0,   "worst_hours": 0.2,
+      "snip_pass": true
+    }
+  ]
+}
+```
+
+## Rules of thumb (Tbilisi @ 41.7° N on 22 Mar)
+
+| Facade direction | Hours (Mar 22) | Pass-by-itself? |
+|---|---|---|
+| North (0°)          | 0.2 h          | NO  |
+| North-East (45°)    | 3.0 h          | YES |
+| East (90°)          | 6.0 h          | YES |
+| South-East (135°)   | 8.9 h          | YES |
+| South (180°)        | 11.8 h         | YES |
+| South-West (225°)   | 8.9 h          | YES |
+| West (270°)         | 6.1 h          | YES |
+| North-West (315°)   | 3.0 h          | YES |
+
+So **any window not within ±45° of due-North** passes the СНиП §6
+threshold on the equinox.
+
+## Combined with the `K-coefficients` (rule 06)
+
+If insolation fails, before redesigning the unit consider:
+
+1. Increasing the side-yard distance (more daylight reaches lower
+   floors) — `h` rule from `06-grg-coefficients.mdc`.
+2. Re-orientation of the block (rotation in plan).
+3. Adding a balcony cut-out or a corner-window detail to open up to
+   the south.
+
+## Future work (v2)
+
+- **Shading by neighbours**. Currently we treat the window as if it has
+  open sky on its exposed side. A ray-trace against `xref_shenobebi`
+  (existing buildings) is needed for a full GRG-grade study; see the
+  reference `archilume` / FreeCAD-Solar / NREL SAM tools listed in
+  `12-external-libraries.mdc`.
+- **Per-window** orientation instead of per-facade. We currently take
+  every exterior polygon edge as a potential window. To upgrade, dump
+  the window-block INSERT entities from the DWG (already in
+  `walls.json`'s INSERT list — not yet wired) and use their rotation
+  angle as the facing direction.
+- **Glazing-to-floor ratio cross-check.** Combine with СНиП §5
+  daylight-factor (`window_area >= 1/8 * room_area`, rule 09).

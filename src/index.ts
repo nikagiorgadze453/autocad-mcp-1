@@ -1198,6 +1198,56 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["inputPath", "outputDir"]
         }
+      },
+      {
+        name: "extract_blocks",
+        description: "Iterates the BlockTable of a DWG and exports every user-defined block (skips anonymous, xref-dependent, layout and dynamic-block-instance blocks) to a stand-alone `.dwg` under `outputDir`. Writes `outputDir/index.json` with name/file/insert-count per block. Use to build a reusable block library from a reference DWG. Wraps `scripts/utilities/extract-blocks.lsp` via accoreconsole.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            inputPath:  { type: "string", description: "Absolute path to the source .dwg" },
+            outputDir:  { type: "string", description: "Folder to write the block .dwg files + index.json into" },
+            minInserts: { type: "number", description: "Skip blocks inserted fewer times than this (default 1)" }
+          },
+          required: ["inputPath", "outputDir"]
+        }
+      },
+      {
+        name: "compute_insolation",
+        description: "Computes direct-sunlight hours per room (СНиП 2.07.01-89 §6) for a date and lat/lon. Reads a rooms.json produced by `extract_rooms` (with `--keep-polygon`), derives each room's facade orientations from its polygon outer edges, and reports `best_hours`, `worst_hours`, and `snip_pass` against the 2.5 h threshold. Defaults are Tbilisi (41.7151 N, 44.8271 E) and 2026-03-22 (vernal equinox check date). Wraps `scripts/python/compute_insolation.py`. No external solar libraries required.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            roomsJson:      { type: "string", description: "Absolute path to <dwg>.walls.rooms.json with polygon vertices" },
+            date:           { type: "string", description: "YYYY-MM-DD. Use 2026-03-22 or 2026-09-22 for the СНиП §6 check (default: 2026-03-22)" },
+            lat:            { type: "number", description: "Latitude in degrees (default 41.7151 = Tbilisi)" },
+            lon:            { type: "number", description: "Longitude in degrees (default 44.8271 = Tbilisi)" },
+            timezoneOffset: { type: "number", description: "UTC offset in hours (default 4 = Tbilisi +04:00)" },
+            thresholdH:     { type: "number", description: "Minimum hours of direct sun for PASS (default 2.5)" },
+            stepMinutes:    { type: "number", description: "Sampling step in minutes (default 5)" },
+            halfAcceptance: { type: "number", description: "Half-angle of acceptable sun direction in degrees (default 90)" },
+            minEdgeM:       { type: "number", description: "Drop polygon edges shorter than this many metres (default 1.5)" },
+            outputPath:     { type: "string", description: "Optional output JSON path" }
+          },
+          required: ["roomsJson"]
+        }
+      },
+      {
+        name: "extract_rooms",
+        description: "Extracts per-room polygons and m² from a DWG by polygonizing wall-layer geometry and matching Georgian / Latin-transliterated room labels (`bina 41.0`, `samzareulo`, `saZinebeli`, …). Two-step pipeline: (1) `scripts/utilities/dump-walls.lsp` via accoreconsole dumps all lines + MText to `<dwg>.walls.json`; (2) `scripts/python/polygonize_rooms.py` polygonises with shapely and writes `<dwg>.rooms.json`. Output JSON contains rooms with `area_m2`, `centroid`, `label`, `label_mkhedruli`, `claimed_m2`, and `delta_m2`.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            inputPath: { type: "string", description: "Absolute path to the .dwg source" },
+            allLayers: { type: "boolean", description: "Polygonise from ALL layers (recommended for legacy/UNI files). Default true." },
+            minM2:     { type: "number",  description: "Polygons below this m² are discarded (default 1)." },
+            maxM2:     { type: "number",  description: "Polygons above this m² are discarded (default 120)." },
+            snapMm:    { type: "number",  description: "Snap near-coincident vertices within this distance in mm (default 20). 0 disables." },
+            bufferM:   { type: "number",  description: "Search radius (m) for matching `bina XX.X` labels to polygons (default 12)." },
+            outputPath:{ type: "string",  description: "Optional explicit path for the rooms.json output." }
+          },
+          required: ["inputPath"]
+        }
       }
     ]
   };
@@ -1486,6 +1536,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
   if (name === "cad_to_shapefile") {
     return handleCadToShapefile(args);
+  }
+  if (name === "extract_rooms") {
+    return handleExtractRooms(args);
+  }
+  if (name === "extract_blocks") {
+    return handleExtractBlocks(args);
+  }
+  if (name === "compute_insolation") {
+    return handleComputeInsolation(args);
   }
 
   // ── Plugin-forwarded tools (direct pass-through) ─────────────
@@ -1916,6 +1975,241 @@ async function handleCadToShapefile(args: Record<string, any>) {
         type: "text" as const,
         text: [
           "## cad_to_shapefile (failed)",
+          `cmd: ${cmd}`,
+          err?.message ?? String(err),
+          err?.stdout ? `\nstdout:\n${String(err.stdout).trim()}` : "",
+          err?.stderr ? `\nstderr:\n${String(err.stderr).trim()}` : "",
+        ].join("\n"),
+      }],
+      isError: true,
+    };
+  }
+}
+
+/**
+ * Wraps the two-step room-extraction pipeline:
+ *   1. accoreconsole runs scripts/utilities/dump-walls.lsp  -> <dwg>.walls.json
+ *   2. python scripts/python/polygonize_rooms.py            -> <dwg>.rooms.json
+ */
+async function handleExtractRooms(args: Record<string, any>) {
+  const inputPath = String(args.inputPath ?? "").trim();
+  if (!inputPath) {
+    return {
+      content: [{ type: "text" as const, text: "extract_rooms: inputPath is required" }],
+      isError: true,
+    };
+  }
+  const allLayers = args.allLayers !== false; // default true
+  const minM2   = Number(args.minM2 ?? 1);
+  const maxM2   = Number(args.maxM2 ?? 120);
+  const snapMm  = Number(args.snapMm ?? 20);
+  const bufferM = Number(args.bufferM ?? 12);
+  const outputPath = args.outputPath ? String(args.outputPath) : null;
+
+  const log: string[] = [];
+  const dumpScr = path.join(SCRIPTS_DIR, "utilities", "dump-walls.scr");
+  const polyPy  = path.join(SCRIPTS_DIR, "python", "polygonize_rooms.py");
+  const dwgBase = path.parse(inputPath);
+  const wallsJson = path.join(dwgBase.dir, `${dwgBase.name}.walls.json`);
+  const roomsJson = outputPath ?? path.join(dwgBase.dir, `${dwgBase.name}.walls.rooms.json`);
+
+  // Step 1 — dump walls + texts via accoreconsole
+  log.push("### step 1: dump-walls.lsp via accoreconsole");
+  const dumpCmd = `"${AUTOCAD_CONSOLE_PATH}" /i "${inputPath}" /s "${dumpScr}"`;
+  log.push(`cmd: ${dumpCmd}`);
+  try {
+    const { stdout, stderr } = await execAsync(dumpCmd, {
+      timeout: 600_000,
+      encoding: "buffer",
+      maxBuffer: 40 * 1024 * 1024,
+    });
+    const out = cleanAutoCADOutput(decodeAutoCADOutput(stdout));
+    log.push(out.split(/\r?\n/).filter(l => l.match(/(WALLS_WRITTEN|LINE pass|LWPOLY pass|TEXT pass)/)).join("\n"));
+    if (stderr.length) {
+      log.push(`(stderr) ${cleanAutoCADOutput(decodeAutoCADOutput(stderr))}`);
+    }
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: ["## extract_rooms — dump step failed", err?.message ?? String(err)].join("\n"),
+      }],
+      isError: true,
+    };
+  }
+  try {
+    await fs.access(wallsJson);
+  } catch {
+    return {
+      content: [{
+        type: "text" as const,
+        text: `extract_rooms: walls.json not produced at ${wallsJson}`,
+      }],
+      isError: true,
+    };
+  }
+  log.push(`wrote: ${wallsJson}`);
+
+  // Step 2 — polygonize via Python
+  log.push("\n### step 2: polygonize_rooms.py");
+  const args2 = [
+    "python", `"${polyPy}"`,
+    `"${wallsJson}"`,
+    allLayers ? "--all-layers" : "",
+    `--min-m2 ${minM2}`,
+    `--max-m2 ${maxM2}`,
+    `--snap-mm ${snapMm}`,
+    `--buffer-m ${bufferM}`,
+    outputPath ? `-o "${outputPath}"` : "",
+  ].filter(Boolean).join(" ");
+  log.push(`cmd: ${args2}`);
+  try {
+    const { stdout, stderr } = await execAsync(args2, {
+      timeout: 600_000,
+      maxBuffer: 40 * 1024 * 1024,
+    });
+    log.push(stdout.trim());
+    if (stderr) log.push(`(stderr)\n${stderr.trim()}`);
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: [
+          "## extract_rooms — polygonize step failed",
+          err?.message ?? String(err),
+          err?.stdout ? `\nstdout:\n${String(err.stdout).trim()}` : "",
+          err?.stderr ? `\nstderr:\n${String(err.stderr).trim()}` : "",
+        ].join("\n"),
+      }],
+      isError: true,
+    };
+  }
+  log.push(`wrote: ${roomsJson}`);
+
+  return {
+    content: [{
+      type: "text" as const,
+      text: ["## extract_rooms", "", ...log].join("\n"),
+    }]
+  };
+}
+
+/**
+ * Wraps `scripts/utilities/extract-blocks.lsp` via accoreconsole.
+ * For every block in the BlockTable it WBLOCKs to `outputDir/<safe>.dwg`
+ * and writes an `index.json` summary.
+ */
+async function handleExtractBlocks(args: Record<string, any>) {
+  const inputPath = String(args.inputPath ?? "").trim();
+  const outputDir = String(args.outputDir ?? "").trim();
+  if (!inputPath || !outputDir) {
+    return {
+      content: [{ type: "text" as const, text: "extract_blocks: inputPath and outputDir are required" }],
+      isError: true,
+    };
+  }
+  await fs.mkdir(outputDir, { recursive: true });
+
+  const scr = path.join(SCRIPTS_DIR, "utilities", "extract-blocks.scr");
+  // env var carries the destination into the LSP
+  const env = { ...process.env, UNI_BLOCKS_OUT: outputDir.replace(/\\/g, "/") };
+  const cmd = `"${AUTOCAD_CONSOLE_PATH}" /i "${inputPath}" /s "${scr}"`;
+  const log: string[] = [`cmd: ${cmd}`, `env: UNI_BLOCKS_OUT=${env.UNI_BLOCKS_OUT}`];
+  try {
+    const { stdout, stderr } = await execAsync(cmd, {
+      timeout: 600_000,
+      encoding: "buffer",
+      maxBuffer: 40 * 1024 * 1024,
+      env,
+    });
+    const out = cleanAutoCADOutput(decodeAutoCADOutput(stdout));
+    const tail = out.split(/\r?\n/).filter(l => l.match(/(BLOCKS_DONE|OUT_DIR|INSERT types|FAILED)/));
+    log.push(...tail);
+    if (stderr.length) log.push(`(stderr) ${cleanAutoCADOutput(decodeAutoCADOutput(stderr))}`);
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: ["## extract_blocks (failed)", err?.message ?? String(err)].join("\n"),
+      }],
+      isError: true,
+    };
+  }
+  const indexPath = path.join(outputDir, "index.json");
+  try { await fs.access(indexPath); }
+  catch {
+    return {
+      content: [{ type: "text" as const, text: `extract_blocks: index.json not produced at ${indexPath}` }],
+      isError: true,
+    };
+  }
+  log.push(`wrote: ${indexPath}`);
+  return {
+    content: [{
+      type: "text" as const,
+      text: ["## extract_blocks", "", ...log].join("\n"),
+    }]
+  };
+}
+
+/**
+ * Wraps `scripts/python/compute_insolation.py` — per-room sunlight
+ * hours for the СНиП 2.07.01-89 §6 daylight check.
+ */
+async function handleComputeInsolation(args: Record<string, any>) {
+  const roomsJson = String(args.roomsJson ?? "").trim();
+  if (!roomsJson) {
+    return {
+      content: [{ type: "text" as const, text: "compute_insolation: roomsJson is required" }],
+      isError: true,
+    };
+  }
+  const date           = String(args.date ?? "2026-03-22");
+  const lat            = Number(args.lat ?? 41.7151);
+  const lon            = Number(args.lon ?? 44.8271);
+  const tz             = Number(args.timezoneOffset ?? 4);
+  const threshold      = Number(args.thresholdH ?? 2.5);
+  const step           = Number(args.stepMinutes ?? 5);
+  const halfAcceptance = Number(args.halfAcceptance ?? 90);
+  const minEdgeM       = Number(args.minEdgeM ?? 1.5);
+  const outputPath     = args.outputPath ? String(args.outputPath) : null;
+
+  const py = path.join(SCRIPTS_DIR, "python", "compute_insolation.py");
+  const cmd = [
+    "python", `"${py}"`, `"${roomsJson}"`,
+    `--date ${date}`,
+    `--lat ${lat}`, `--lon ${lon}`,
+    `--tz ${tz}`,
+    `--threshold-h ${threshold}`,
+    `--step ${step}`,
+    `--half-acceptance ${halfAcceptance}`,
+    `--min-edge-m ${minEdgeM}`,
+    outputPath ? `-o "${outputPath}"` : "",
+  ].filter(Boolean).join(" ");
+
+  try {
+    const { stdout, stderr } = await execAsync(cmd, {
+      timeout: 600_000,
+      maxBuffer: 40 * 1024 * 1024,
+    });
+    return {
+      content: [{
+        type: "text" as const,
+        text: [
+          "## compute_insolation",
+          `cmd: ${cmd}`,
+          "",
+          stdout.trim(),
+          stderr ? `\n(stderr)\n${stderr.trim()}` : "",
+        ].join("\n"),
+      }]
+    };
+  } catch (err: any) {
+    return {
+      content: [{
+        type: "text" as const,
+        text: [
+          "## compute_insolation (failed)",
           `cmd: ${cmd}`,
           err?.message ?? String(err),
           err?.stdout ? `\nstdout:\n${String(err.stdout).trim()}` : "",
