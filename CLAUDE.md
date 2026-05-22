@@ -96,14 +96,22 @@ For the **B-type apartment** the office uses heavier values:
 | **B** | სტანდარტული ბინა | 63 – 69 | 2 | 6.50 × 10.30 m |
 | **C** | ბოლო ერთეული | 85 – 86 | 3 | 9.54 × 10.30 m |
 
-**Common module:** structural bay 6 500 mm (end bay 6 900 mm), floor
-height 3 000 mm.
+**Common module:** structural bay 6 500 mm nominal (UNI-measured:
+**6 600 mm** dominant). End bay 6 900 mm. Floor height 3 000 mm.
+
+**B-series depth (UNI-measured):** 7 600 mm structural / 10 300 mm
+with balcony.
 
 **Reference cluster:** 5 + 5 = 10 binas per floor, envelope ~ 535 m²,
 gross above-ground per floor ~ 658.4 m².
 
 Real office reference files: `UNI A2-A4.dwg`, `UNI B1-B4.dwg` in
-`C:\Users\PCZONE.GE\Downloads\`.
+`C:\Users\PCZONE.GE\Downloads\`. Measured facts:
+`memory/uni-reference-extract-FACTS.md`.
+
+**Office Georgian text styles (existing files):** `geo`,
+`geo-kolxetmtavruli`, `chveumtavruli`, `Avaza Mtavruli`. Only force
+**Sylfaen** for brand-new drawings.
 
 ---
 

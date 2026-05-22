@@ -22,21 +22,33 @@ If `old-count > 60` the file is almost certainly a legacy import.
 
 ## Step 1 — Layer-name → standard mapping
 
+Expanded with patterns measured on UNI A2-A4, B1-B4 (see
+`memory/uni-reference-extract-FACTS.md`):
+
 | Old layer pattern | New standard layer |
 |---|---|
-| `*Wall*`, `*Bearing*`, `*shenobeb*` | `WALL` |
+| `*Wall*`, `*Bearing*`, `*shenobeb*`, `--blokis kedeli`, `*KEDELI*` | `WALL` |
 | `*partition*`, `*tixar*` | `WALL-INNER` |
 | `*Door*`, `*kar-*`, but **only door geometry** | `DOOR` |
 | `*panjar*`, `*window*`, `*kar-panjara*` | `WINDOW` |
-| `*Furniture*`, `*Interior*`, `*aveji*` | `FURN` |
-| `*WC*`, `*lavabo*`, `*shower*`, `*bidet*`, `*plumbing*` | `FIX` |
-| `*grid*`, `*axis*`, `*Reg_Nak*` | `GRID` |
+| `*Furniture*`, `*Interior*`, `*aveji*`, `AVEJI_MODZRAVI`, `AVEJI_UDZRAVI` | `FURN` |
+| `*WC*`, `*lavabo*`, `*shower*`, `*bidet*`, `*plumbing*`, `*SANteq*` | `FIX` |
+| `*grid*`, `*axis*`, `*Reg_Nak*`, `AXES` | `GRID` |
 | `*axis-label*`, `*bubble*` | `AXIS-LABEL` |
-| `*zoma*`, `*dim*`, `*cota*` | `DIM` |
-| `*text*`, `*anno*`, `*annotation*` | `TEXT` |
-| `*title*`, `*werwera*`, `*frame*` | `TITLE` |
+| `*zoma*`, `*dim*`, `*cota*`, `ZOMIS XAZEBI` | `DIM` |
+| `*text*`, `*anno*`, `*annotation*`, `G-Anno-Nplt`, `G-Anno-Scrn`, `A-Anno-Scrn` | `TEXT` |
+| `*title*`, `*werwera*`, `*frame*`, `*SATAURI*` | `TITLE` |
 | `*topo*`, `*GAZI*`, `*sxivebi*`, `*momijnave*` | leave on the topo layer (xref residue) |
 | `*ნაკვეთ*`, `*sakutreb*` | `PARCEL` (extra) |
+| `*MISACVDOMOBIS*` (accessibility plan) | `MISACVDOMOBIS` (keep, do not remap) |
+| `*SAYRDENI*` (structural support plan) | `SAYRDENI` (keep) |
+| `*DETALEBI*` (details) | `DETALEBI` (keep) |
+| `gegmebi_Pen_No__*`, `*_Pen_No__*` | inspect & remap manually (CP-1251 residue) |
+| Numeric-only layer names (e.g. `0.35`) | inspect — usually line-weight aliases |
+
+When in doubt, **inspect the entity types on the layer** before
+remapping. The legacy office files are not monolithic; some `Pen_No`
+layers carry geometry, others are empty residue from the layer table.
 
 > When in doubt, keep the entity on its current layer and inspect by hand.
 

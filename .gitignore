@@ -37,3 +37,9 @@ autocad-plugin/obj/
 stage-dump.txt
 stage-dump-deep.txt
 all-dump.txt
+
+# AutoCAD crash / error reports
+ErrorReports/
+
+# Raw UNI dumps live next to the source DWGs in Downloads/, not in repo
+# (regenerate via scripts/utilities/uni-dump.scr — see rule 13)

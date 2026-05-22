@@ -29,7 +29,25 @@ explicitly asks otherwise.
 4. For multi-line MText, separate lines with `\\P`, not `\n`.
 
 5. Fallback fonts if Sylfaen is missing on the machine, in this order:
-   `BPG Excelsior Caps`, `Arial Unicode MS`, `Noto Sans Georgian`.
+ `BPG Excelsior Caps`, `Arial Unicode MS`, `Noto Sans Georgian`.
+
+## Office-existing styles (UNI / legacy DWGs)
+
+When adapting an **existing** UNI / office DWG, do not force Sylfaen —
+match the file's existing styles. Measured on UNI A2-A4, B1-B4 (see
+`memory/uni-reference-extract-FACTS.md`):
+
+| Style | Use |
+|---|---|
+| `geo` | Georgian body text — the office's day-to-day style |
+| `geo-kolxetmtavruli` | Uppercase (Kolkheti Mtavruli) — titles |
+| `chveumtavruli` / `ChveuMtavr` | Common Mtavruli — section titles |
+| `Avaza Mtavruli` | Decorative Mtavruli — appears as inline override |
+| `Arch-Dim` | dimension text |
+
+For **new** drawings the AI generates from scratch, use Sylfaen as
+above. For **edits to an existing UNI file**, set the current style to
+`geo` or `geo-kolxetmtavruli` first and write text with that style.
 
 ## Common Georgian terms (use these spellings)
 

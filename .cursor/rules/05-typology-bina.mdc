@@ -16,8 +16,14 @@ or analysing a `bina`.
 |---|---|
 | Drawing units | mm (`INSUNITS = 4`) |
 | Coordinate frame | UTM zone 38 N (Tbilisi) — values in mm × 1 000 of UTM-m |
-| Structural module (typical bay) | **6 500 mm** |
+| Structural module (typical bay) | **6 500 mm** (nominal) / **6 600 mm** (UNI-measured)¹ |
 | End-bay variant | 6 900 mm |
+| Apartment depth (B-series, UNI-measured)¹ | **7 600 mm** structural shell / **10 300 mm** with balcony |
+
+¹ Source: `memory/uni-reference-extract-FACTS.md` — top-frequency
+dimensions measured headlessly across UNI B1-B4. When generating a
+**new** flat, prefer 6 500 / 10 300; when **matching an existing UNI
+plan**, use 6 600 / 7 600 to align with the legacy drawings.
 | Floor-to-floor height | 3 000 mm |
 | Floor slab | 200 mm RC |
 | External wall | **600 mm** = 300 mm RC + 200 mm insulation + 100 mm finish |

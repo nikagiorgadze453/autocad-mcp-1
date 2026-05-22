@@ -52,17 +52,35 @@ steal styles from it, then run the `draw-bina-b-type` skill on top.
 
 ## Things to extract from each file (one-time, then cache)
 
-Run once and store the result in `memory/uni-reference-extract.json`:
+**DONE 2026-05-22** — see `memory/uni-reference-extract-FACTS.md`
+for the measured truth. Raw dumps in
+`C:\Users\PCZONE.GE\Downloads\UNI *.uni-dump.json`.
 
-- bay module width
-- depth (front-to-back)
-- wall thickness used (compare against rule 02)
-- door / window schedule
-- furniture pack — block names + insert points
-- title block code (`ა-…`, `კ-…`, etc.)
+Headers of what was measured:
 
-Use `analyze-stage-plan` (skill) on each DWG, then merge into the
-office knowledge base.
+- INSUNITS = 4 (mm) in all files ✅
+- All files are placed at UTM zone 38N coordinates
+- 130-230 legacy layers per file (rule 10 remap pending)
+- 400-650 block definitions per file (rich block library)
+- Text styles: `geo`, `geo-kolxetmtavruli`, `chveumtavruli`,
+  `Avaza Mtavruli` — NOT Sylfaen
+- Top dimensions: 7600, 6600, 2500, 1700, 1550, 1400, 1050, 1000 mm
+- Closed LWPOLYLINE rooms: 0 — rooms defined by wall intersections /
+  hatches, not closed polys (TODO: BOUNDARY extraction)
+
+## Re-running the extraction
+
+```powershell
+# 1. Dump all 7 files via accoreconsole
+foreach ($f in "UNI A2.dwg","UNI A3.dwg","UNI A4.dwg","UNI B1.dwg","UNI B2.dwg","UNI B3.dwg","UNI B4.dwg") {
+  & "C:\Program Files\Autodesk\AutoCAD 2027\accoreconsole.exe" `
+    /i "C:\Users\PCZONE.GE\Downloads\$f" `
+    /s "C:\Users\PCZONE.GE\autocad-mcp\scripts\utilities\uni-dump.scr"
+}
+
+# 2. Summarise into memory/uni-reference-extract.{json,md}
+node scripts/python/summarize_uni_dumps.js
+```
 
 ## When NOT to use UNI as reference
 
