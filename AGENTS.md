@@ -129,30 +129,40 @@ Anything saved there can be invoked with the `run_lsp_script` MCP tool.
 scripts/
 ├── install/                      one-command setup for end users
 │   ├── install-cursor.ps1        copies rules+skills to user's .cursor/
-│   ├── install-claude-code.ps1   writes ~/.claude/CLAUDE.md
-│   └── install-mcp.ps1           registers autocad-mcp with the agent
+│   ├── install-cursor.sh         macOS / Linux equivalent
+│   ├── install-claude-code.ps1   writes ~/.claude/CLAUDE.md, runs claude mcp add
+│   ├── install-claude-code.sh    macOS / Linux equivalent
+│   └── sync-rules.ps1            CLAUDE.md drift check vs .cursor/rules
 ├── templates/                    parametric generators
 │   ├── bina-b-type.lsp           2BR ~65 m² apartment
 │   └── fz-sheet.lsp              GRG sheet skeleton (A0)
-├── utilities/                    one-off helpers
+├── utilities/                    helpers
 │   ├── load-sylfaen.lsp          text style + units bootstrap
 │   ├── layer-remap-to-standard.lsp  legacy → standard layers
 │   ├── compute-grg-k.lsp         K-coefficients
 │   ├── steal-from-template.lsp   Lee Mac Steal wrapper
 │   ├── dwg-to-dxf-batch.lsp      AutoCAD-side DWG→DXF for ezdxf
+│   ├── uni-dump.lsp + .scr       headless analyzer for the UNI reference set
 │   └── git-push-with-token.ps1   PAT push helper
 ├── validators/                   quality gates
 │   ├── check-min-rooms.lsp       СНиП minima
 │   └── check-title-block.lsp     title block presence
 ├── python/                       headless / GIS adapters
 │   ├── ezdxf_batch.py            audit, purge, rename, font swap
-│   └── cad_to_gis.py             DXF → Shapefile / GeoPackage
+│   ├── cad_to_gis.py             DXF → Shapefile / GeoPackage
+│   └── summarize_uni_dumps.js    distil UNI dumps into memory/
 ├── vendor/                       third-party (license-aware)
 │   ├── README.md                 how to populate each entry
 │   ├── lee-mac/                  Steal.lsp etc (git-ignored)
-│   └── autocad-lisp-toolkit/     MIT donor scripts
+│   └── autocad-lisp-toolkit/     MIT donor scripts (git-ignored)
+├── legacy/                       frozen one-off Node scripts (see README)
 └── extract_context.lsp           context extractor
 ```
+
+> **Top-level `analyze_v3.cjs` and `generate_report_docx.cjs`** are
+> deliberately kept at the repo root — `src/index.ts` invokes them
+> by relative path (cwd-rooted) from the `analyze_stage_plan` MCP
+> tool.
 
 Add new scripts into the right subfolder and document them above.
 

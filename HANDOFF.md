@@ -122,9 +122,9 @@ This is the **fastest and most reliable** path for >20 entities or any
 | File | Purpose |
 |---|---|
 | `scripts/house3d.lsp` | 3D house: walls (BOX), floor, roof, SW iso view, conceptual visual style. Run with `run_lsp_script`. |
-| `send_georgian.js` | Node script that re-labels a drawing's MText handles with Sylfaen-encoded Georgian |
-| `draw_house_3d.js` / `draw_house_3d_v2.js` | First attempts at 3D house from Node (replaced by `house3d.lsp` for speed) |
-| `draw_2bed.js` | Full 2-bedroom 2D plan: walls (filled), doors, windows, furniture, fixtures, dimensions, Georgian labels |
+| `scripts/templates/bina-b-type.lsp` | Parametric B-type 2BR apartment generator (canonical) |
+| `scripts/templates/fz-sheet.lsp` | GRG sheet skeleton (A0) |
+| `scripts/legacy/*.js` / `*.cjs` | Frozen one-off Node scripts from the exploration phase (see `scripts/legacy/README.md`) |
 
 We have validated that:
 - Drawing primitives (line, circle, rectangle, polyline, arc, hatch).
@@ -178,12 +178,14 @@ extensions, and installs.
 - **LISP dumps:** `scripts/dump-stage.lsp`, `scripts/dump-stage-deep.lsp`
   — full modelspace snapshots to text (handles, layers, bbox, dims,
   polylines, inserts).
-- **Node parsers:** `analyze_stage.cjs`, `sweep_m2.cjs`, `find_target.cjs`,
-  `analyze_v2.cjs`, `analyze_v3.cjs` — classify walls/doors/windows,
-  per-`bina` aggregation, dimension values (watch `DIMLFAC`: dims may be
-  in metres while drawing units are mm).
-- **Reports:** `STAGE_PLAN_REPORT.md` (English), `STAGE_PLAN_REPORT_GE.docx`
-  (Georgian via `generate_report_docx.cjs` + `docx` npm package).
+- **Node parsers:** `analyze_v3.cjs` (active, top-level), plus earlier
+  generations at `scripts/legacy/analyze_*.cjs`, `sweep_m2.cjs`,
+  `find_target.cjs`. They classify walls/doors/windows, do per-`bina`
+  aggregation, dimension values (watch `DIMLFAC`: dims may be in metres
+  while drawing units are mm).
+- **Reports:** `docs/examples/STAGE_PLAN_REPORT.md` (English sample),
+  `docs/examples/STAGE_PLAN_REPORT_GE.docx` (Georgian sample, written
+  by `generate_report_docx.cjs` + `docx` npm package).
 - **Gotcha:** drawings often contain **two copies** of geometry (local +
   UTM-mm); analysis for real-world coords must use the georeferenced copy.
 - **Gotcha:** if direct MCP calls return HTTP 500, a modal dialog in

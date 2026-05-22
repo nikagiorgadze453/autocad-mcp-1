@@ -1,5 +1,0 @@
-killed=177  kept=4
-  remain 0 VIEWPORT layer=Defpoints
-  remain 1 VIEWPORT layer=Defpoints
-  remain 2 VIEWPORT layer=0
-  remain 3 LWPOLYLINE layer=0
