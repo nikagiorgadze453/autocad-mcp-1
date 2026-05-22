@@ -1,0 +1,72 @@
+# UNI reference works — real office drawings
+
+Seven full office drawings that act as the **gold-standard reference set**
+for what a finished `bina` (apartment) DWG looks like. Use these as
+training corpus for every typology / dimension / layer question.
+
+## Files
+
+Location: `C:\Users\PCZONE.GE\Downloads\` (not in git — copy / hardlink
+locally if you need them attached as xrefs).
+
+| File | Likely typology | Size | Use as reference for |
+|---|---|---|---|
+| `UNI A2.dwg` | A-type variant 2 | ~9.5 MB | small flat, ~45-50 m², 1BR layouts |
+| `UNI A3.dwg` | A-type variant 3 | ~8.7 MB | small flat, alternate orientation |
+| `UNI A4.dwg` | A-type variant 4 | ~5.8 MB | small flat, end-cap variant |
+| `UNI B1.dwg` | B-type variant 1 | ~5.7 MB | standard 2BR ~65 m², mid-row |
+| `UNI B2.dwg` | B-type variant 2 | ~5.2 MB | standard 2BR, mirrored |
+| `UNI B3.dwg` | B-type variant 3 | ~5.1 MB | standard 2BR, balcony variant |
+| `UNI B4.dwg` | B-type variant 4 | ~4.8 MB | standard 2BR, kitchen-window variant |
+
+> A C-type (3BR end-cap) is **not** in this set — see typology rule 05 for
+> the cluster description.
+
+## How to consult
+
+1. **As xref base** when generating a similar typology:
+   ```
+   (command "_.-XATTACH"
+            "C:/Users/PCZONE.GE/Downloads/UNI B1.dwg"
+            "0,0,0" "1" "1" "0")
+   ```
+2. **As style donor** with Lee Mac Steal (skill `steal-from-template`):
+   - blocks, layers, text styles, dim styles all come from these.
+3. **As validation oracle** when in doubt about a dimension — open the
+   matching letter+number, measure with `DIST`, copy the value.
+4. **As headless audit** with `audit_dwg_headless` once ODA File
+   Converter is installed (or with the `dwg-to-dxf-batch.lsp` helper
+   inside AutoCAD).
+
+## Naming convention
+
+`UNI <Letter><Number>` reads:
+
+- `Letter` — typology (`A` = small ~45 m², `B` = standard ~65 m²,
+  `C` = end-cap ~85 m²) per rule 05.
+- `Number` — variant index inside the same typology (1 = canonical,
+  2-4 = alternates / mirrors / corner conditions).
+
+When the user says "make me a UNI-style B-type", load `UNI B1.dwg` and
+steal styles from it, then run the `draw-bina-b-type` skill on top.
+
+## Things to extract from each file (one-time, then cache)
+
+Run once and store the result in `memory/uni-reference-extract.json`:
+
+- bay module width
+- depth (front-to-back)
+- wall thickness used (compare against rule 02)
+- door / window schedule
+- furniture pack — block names + insert points
+- title block code (`ა-…`, `კ-…`, etc.)
+
+Use `analyze-stage-plan` (skill) on each DWG, then merge into the
+office knowledge base.
+
+## When NOT to use UNI as reference
+
+- GRG / site-plan questions — use `wetransfer_19_xref_grg_*` or
+  `wetransfer_03_xref_saproeqto_*` instead.
+- Foundation / structural — UNI is architectural only.
+- Public buildings (school, hospital) — UNI is residential typology.

@@ -1,14 +1,45 @@
 {
-  "name": "autocad-mcp-server",
-  "version": "1.0.0",
-  "description": "MCP Server for Autodesk AutoCAD Automation",
+  "name": "autocad-mcp-georgian-architecture",
+  "version": "1.1.0",
+  "description": "MCP server + plugin pack for Georgian / Tbilisi residential architecture. AutoCAD 2026+ automation with Sylfaen text, 14-39 ordinance, Neufert/СНиП validation, and ready-made apartment typologies. Works in Cursor, Claude Code, and any MCP-compatible AI client.",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "autocad-mcp": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "install:cursor": "pwsh ./scripts/install/install-cursor.ps1",
+    "install:claude-code": "pwsh ./scripts/install/install-claude-code.ps1",
+    "install:cursor:bash": "bash ./scripts/install/install-cursor.sh",
+    "install:claude-code:bash": "bash ./scripts/install/install-claude-code.sh",
+    "sync-rules": "pwsh ./scripts/install/sync-rules.ps1",
+    "postinstall": "echo \"Run npm run install:cursor or npm run install:claude-code to finish setup.\""
+  },
+  "keywords": [
+    "autocad",
+    "mcp",
+    "model-context-protocol",
+    "architecture",
+    "georgia",
+    "tbilisi",
+    "georgian",
+    "grg",
+    "snip",
+    "neufert",
+    "cad",
+    "cursor",
+    "claude-code",
+    "ai"
+  ],
+  "author": "PCZONE.GE",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nikagiorgadze453/autocad-mcp-1"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.1",
@@ -19,5 +50,19 @@
     "@types/node": "^20.10.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist/",
+    "scripts/",
+    ".cursor/rules/",
+    ".cursor/skills/",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "requirements.txt",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
   }
 }

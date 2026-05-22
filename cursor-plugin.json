@@ -1,0 +1,65 @@
+{
+  "$schema": "https://docs.cursor.com/schemas/plugin.json",
+  "name": "autocad-mcp-georgian-architecture",
+  "displayName": "AutoCAD MCP — Georgian Architecture",
+  "version": "1.1.0",
+  "description": "AutoCAD 2026+ automation pack for Georgian / Tbilisi architecture: Sylfaen text, 14-39 ordinance K-coefficients, Neufert/СНиП validation, A/B/C apartment typologies, and a 7-stage Definition of Done.",
+  "publisher": "pczone-ge",
+  "homepage": "https://github.com/nikagiorgadze453/autocad-mcp-1",
+  "license": "MIT",
+  "categories": [
+    "AI",
+    "CAD",
+    "Architecture"
+  ],
+  "languages": [
+    "ka",
+    "en"
+  ],
+  "rules": [
+    ".cursor/rules/00-georgian-text.mdc",
+    ".cursor/rules/01-title-block.mdc",
+    ".cursor/rules/02-units-dims.mdc",
+    ".cursor/rules/03-references.mdc",
+    ".cursor/rules/04-autocad-mcp-workflow.mdc",
+    ".cursor/rules/05-typology-bina.mdc",
+    ".cursor/rules/06-grg-coefficients.mdc",
+    ".cursor/rules/07-lisp-recipes.mdc",
+    ".cursor/rules/08-sheet-codes.mdc",
+    ".cursor/rules/09-snip-neufert.mdc",
+    ".cursor/rules/10-cyrillic-purge.mdc",
+    ".cursor/rules/11-validation.mdc",
+    ".cursor/rules/12-external-libraries.mdc",
+    ".cursor/rules/13-uni-reference-works.mdc"
+  ],
+  "skills": [
+    ".cursor/skills/analyze-stage-plan/SKILL.md",
+    ".cursor/skills/draw-bina-b-type/SKILL.md",
+    ".cursor/skills/generate-fz-sheet/SKILL.md",
+    ".cursor/skills/remap-cyrillic-layers/SKILL.md",
+    ".cursor/skills/compute-grg-k/SKILL.md",
+    ".cursor/skills/validate-and-issue-pdf/SKILL.md",
+    ".cursor/skills/steal-from-template/SKILL.md",
+    ".cursor/skills/dxf-headless-batch/SKILL.md",
+    ".cursor/skills/cad-to-gis/SKILL.md"
+  ],
+  "mcpServers": {
+    "autocad-mcp": {
+      "command": "node",
+      "args": ["${workspaceFolder}/dist/index.js"],
+      "env": {
+        "AUTOCAD_PLUGIN_URL": "http://localhost:12345",
+        "MCP_AUTOCAD_TOKEN": "default-secret-token",
+        "AUTOCAD_SCRIPTS_DIR": "${workspaceFolder}/scripts"
+      }
+    }
+  },
+  "documentation": {
+    "agentsFile": "AGENTS.md",
+    "claudeFile": "CLAUDE.md",
+    "readme": "README.md"
+  },
+  "engines": {
+    "cursor": ">=0.40.0"
+  }
+}
