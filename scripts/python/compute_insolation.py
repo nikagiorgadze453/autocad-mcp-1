@@ -35,6 +35,13 @@ from datetime import date
 from pathlib import Path
 from typing import List, Tuple
 
+# Force UTF-8 stdout on Windows so Georgian labels print
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 try:
     from shapely.geometry import Polygon
 except ImportError:
